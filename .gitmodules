@@ -1,4 +1,3 @@
-[submodule "eigen"]
-	path = eigen
+[submodule "ext/Eigen"]
+	path = ext/Eigen
 	url = https://gitlab.com/libeigen/eigen.git
-	branch = master
