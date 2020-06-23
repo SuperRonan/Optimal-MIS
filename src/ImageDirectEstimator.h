@@ -1,120 +1,12 @@
 #pragma once
 
-#include <Image/Image.h>
-#include <System/Parallel.h>
-#include <cassert>
-#include <mutex>
+#include <ImageEstimator.h>
 #include <Eigen/Dense>
-
-#define PRINT(var) std::cout << #var << ": " << var << std::endl;
 
 namespace MIS
 {
-	// Major:
-	// true -> row major
-	// false -> col major
-	template <class Spectrum, class Float, bool MAJOR>
-	class ImageEstimator
-	{
-	protected:
-
-		const int m_numtechs;
-
-		const int m_width, m_height;
-
-		constexpr static int spectrumDim()
-		{
-			return Spectrum::nSamples;
-		}
-
-		int PixelTo1D(int i, int j)const
-		{
-			if constexpr (MAJOR) // row major
-				return i * m_height + j;
-			else // col major
-				return j * m_width + i;
-		}
-
-	public:
-
-		ImageEstimator(int N, int width, int height) :
-			m_numtechs(N),
-			m_width(width),
-			m_height(height)
-		{}
-
-		ImageEstimator(ImageEstimator const& other) = default;
-
-		virtual void setSampleForTechnique(int techIndex, int n)
-		{}
-
-		virtual void addEstimate(Spectrum const& balance_estimate, const Float* balance_weights, int tech_index, Float u, Float v, bool thread_safe_update = false) = 0;
-
-		virtual void addOneTechniqueEstimate(Spectrum const& balance_estimate, int tech_index, Float u, Float v, bool thread_safe_update = false) = 0;
-
-		virtual void loop() = 0;
-
-		virtual void solve(Image::Image<Spectrum, MAJOR>& res, int iterations) = 0;
-
-		virtual void debug(int iterations, bool col_sum, bool matrix, bool vec, bool alpha)const
-		{}
-	};
-
-	template <class Spectrum, class Float, bool MAJOR>
-	class BalanceEstimatorImage : public ImageEstimator<Spectrum, Float, MAJOR>
-	{
-	protected:
-
-		Image::Image<Spectrum, MAJOR> m_image;
-
-		std::mutex m_mutex;
-
-	public:
-
-		BalanceEstimatorImage(int N, int width, int height) :
-			ImageEstimator(N, width, height),
-			m_image(width, height)
-		{
-			m_image.fill(0);
-		}
-
-		BalanceEstimatorImage(BalanceEstimatorImage const& other) :
-			ImageEstimator(other)
-		{
-			m_image = other.m_image;
-		}
-
-
-		virtual void addEstimate(Spectrum const& balance_estimate, const Float* balance_weights, int tech_index, Float u, Float v, bool thread_safe_update = false) override
-		{
-			addOneTechniqueEstimate(balance_estimate, tech_index, u, v, thread_safe_update);
-		}
-
-		virtual void loop() override
-		{}
-
-		virtual void addOneTechniqueEstimate(Spectrum const& balance_estimate, int tech_index, Float u, Float v, bool thread_safe_update = false) override
-		{
-			Math::Vector<int, 2> pixel = { u * m_width, v * m_height };
-			if (thread_safe_update)
-				m_mutex.lock();
-			m_image(pixel) += balance_estimate;
-			if (thread_safe_update)
-				m_mutex.unlock();
-		}
-
-		virtual void solve(Image::Image<Spectrum, MAJOR>& res, int iterations) override
-		{
-			Parallel::ParallelFor(0, m_width * m_height,
-				[&](int pixel)
-				{
-					res[pixel] += m_image[pixel] / iterations;
-				});
-		}
-	};
-
-	template <class Spectrum, class Float, bool MAJOR>
-	class DirectEstimatorImage : public ImageEstimator<Spectrum, Float, MAJOR>
+    template <class Spectrum, class Float, bool ROW_MAJOR>
+	class ImageDirectEstimator : public ImageEstimator<Spectrum, Float, MAJOR>
 	{
 	protected:
 
@@ -206,7 +98,7 @@ namespace MIS
 	public:
 
 #ifdef ONE_CONTIGUOUS_ARRAY
-		DirectEstimatorImage(int N, int width, int height) :
+		ImageDirectEstimator(int N, int width, int height) :
 			ImageEstimator(N, width, height),
 			msize(N* (N + 1) / 2),
 			m_pixel_data_size(msize * sizeof(StorageFloat) + spectrumDim() * m_numtechs * sizeof(StorageFloat) + m_numtechs * sizeof(StorageUInt)),
@@ -216,7 +108,7 @@ namespace MIS
 			m_sample_per_technique(std::vector<unsigned int>(m_numtechs, 1))
 		{}
 
-		DirectEstimatorImage(DirectEstimatorImage const& other) :
+		ImageDirectEstimator(ImageDirectEstimator const& other) :
 			ImageEstimator(other),
 			msize(other.msize),
 			m_pixel_data_size(other.m_pixel_data_size),
@@ -226,7 +118,7 @@ namespace MIS
 			m_sample_per_technique(other.m_sample_per_technique)
 		{}
 
-		DirectEstimatorImage(DirectEstimatorImage && other):
+		ImageDirectEstimator(ImageDirectEstimator && other):
 			ImageEstimator(other),
 			msize(other.msize),
 			m_pixel_data_size(other.m_pixel_data_size),
@@ -236,7 +128,7 @@ namespace MIS
 			m_sample_per_technique(std::move(other.m_sample_per_technique))
 		{}
 #else
-		DirectEstimatorImage(int N, int width, int height) :
+		ImageDirectEstimator(int N, int width, int height) :
 			ImageEstimator(N, width, height),
 			msize(N* (N + 1) / 2),
 			m_sample_per_technique(std::vector<unsigned int>(m_numtechs, 1))
@@ -247,7 +139,7 @@ namespace MIS
 			m_sampleCounts = std::vector<StorageUInt>(res * m_numtechs, (StorageUInt)0);
 		}
 
-		DirectEstimatorImage(DirectEstimatorImage const& other) :
+		ImageDirectEstimator(ImageDirectEstimator const& other) :
 			ImageEstimator(other),
 			msize(other.msize),
 			m_matrices(other.m_matrices),
@@ -256,7 +148,7 @@ namespace MIS
 			m_sample_per_technique(other.m_sample_per_technique)
 		{}
 
-		DirectEstimatorImage(DirectEstimatorImage && other) :
+		ImageDirectEstimator(ImageDirectEstimator && other) :
 			ImageEstimator(other),
 			msize(other.msize),
 			m_matrices(std::move(other.m_matrices)),
@@ -358,13 +250,13 @@ namespace MIS
 
 		virtual void saveColSum(int iterations)const
 		{
-			Image::Image<double, MAJOR> img(m_width * m_numtechs, m_height);
+			Image::Image<double, ROW_MAJOR> img(m_width * m_numtechs, m_height);
 			int resolution = m_width * m_height;
 			std::vector<MatrixT> matrices = Parallel::preAllocate(MatrixT(m_numtechs, m_numtechs));
 			Parallel::ParallelFor(0, resolution, [&](int pixel)
 				{
 					int tid = Parallel::tid();
-					Math::Vector<int, 2> indices = Image::Image<double, MAJOR>::indices(pixel, m_width, m_height);
+					Math::Vector<int, 2> indices = Image::Image<double, ROW_MAJOR>::indices(pixel, m_width, m_height);
 					PixelData data = getPixelData(pixel);
 					MatrixT& matrix = matrices[tid];
 					fillMatrix(matrix, data, iterations);
@@ -386,13 +278,13 @@ namespace MIS
 
 		virtual void saveMatrices(int iterations)const
 		{
-			Image::Image<double, MAJOR> img(m_width * m_numtechs, m_height * m_numtechs);
+			Image::Image<double, ROW_MAJOR> img(m_width * m_numtechs, m_height * m_numtechs);
 			int resolution = m_width * m_height;
 			std::vector<MatrixT> matrices = Parallel::preAllocate(MatrixT(m_numtechs, m_numtechs));
 			Parallel::ParallelFor(0, resolution, [&](int pixel)
 				{
 					int tid = Parallel::tid();
-					Math::Vector<int, 2> indices = Image::Image<double, MAJOR>::indices(pixel, m_width, m_height);
+					Math::Vector<int, 2> indices = Image::Image<double, ROW_MAJOR>::indices(pixel, m_width, m_height);
 					PixelData data = getPixelData(pixel);
 					MatrixT& matrix = matrices[tid];
 					fillMatrix(matrix, data, iterations);
@@ -409,12 +301,12 @@ namespace MIS
 
 		virtual void saveVectors(int iterations)const
 		{
-			Image::Image<Spectrum, MAJOR> img(m_width * m_numtechs, m_height);
+			Image::Image<Spectrum, ROW_MAJOR> img(m_width * m_numtechs, m_height);
 			int resolution = m_width * m_height;
 			Parallel::ParallelFor(0, resolution, [&](int pixel)
 				{
 					int tid = Parallel::tid();
-					Math::Vector<int, 2> indices = Image::Image<double, MAJOR>::indices(pixel, m_width, m_height);
+					Math::Vector<int, 2> indices = Image::Image<double, ROW_MAJOR>::indices(pixel, m_width, m_height);
 					PixelData data = getPixelData(pixel);
 					for (int i = 0; i < m_numtechs; ++i)
 					{
@@ -429,7 +321,7 @@ namespace MIS
 
 		virtual void saveAlphas(int iterations)const
 		{
-			Image::Image<Spectrum, MAJOR> img(m_width * m_numtechs, m_height);
+			Image::Image<Spectrum, ROW_MAJOR> img(m_width * m_numtechs, m_height);
 			using Solver = Eigen::ColPivHouseholderQR<MatrixT>;
 			VectorT MVector(m_numtechs);
 			for (int i = 0; i < m_numtechs; ++i)	MVector(i) = m_sample_per_technique[i];
@@ -440,7 +332,7 @@ namespace MIS
 			Parallel::ParallelFor(0, resolution, [&](int pixel)
 				{
 					int tid = Parallel::tid();
-					Math::Vector<int, 2> indices = Image::Image<double, MAJOR>::indices(pixel, m_width, m_height);
+					Math::Vector<int, 2> indices = Image::Image<double, ROW_MAJOR>::indices(pixel, m_width, m_height);
 					MatrixT& matrix = matrices[tid];
 					VectorT& vector = vectors[tid];
 					Solver& solver = solvers[tid];
@@ -500,7 +392,7 @@ namespace MIS
 		}
 #endif
 
-		virtual void solve(Image::Image<Spectrum, MAJOR>& res, int iterations) override
+		virtual void solve(Image::Image<Spectrum, ROW_MAJOR>& res, int iterations) override
 		{
 			using Solver = Eigen::ColPivHouseholderQR<MatrixT>;
 			VectorT MVector(m_numtechs);
@@ -555,5 +447,4 @@ namespace MIS
 #undef ONE_CONTIGUOUS_ARRAY
 #undef ENABLE_DEBUG
 	};
-
-} // namespace MIS
+}
