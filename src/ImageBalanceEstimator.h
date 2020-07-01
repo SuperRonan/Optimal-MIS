@@ -27,20 +27,20 @@ namespace MIS
 			m_image = other.m_image;
 		}
 
-		virtual void addEstimate(Spectrum const& balance_estimate, const Float* balance_weights, int tech_index, Float u, Float v, bool thread_safe_update = false) override
+		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index, Float u, Float v, bool thread_safe_update = false) override
 		{
-			addOneTechniqueEstimate(balance_estimate, tech_index, u, v, thread_safe_update);
+			addOneTechniqueEstimate(estimate * balance_weights[tech_index], tech_index, u, v, thread_safe_update);
 		}
 
 		virtual void loop() override
 		{}
 
-		virtual void addOneTechniqueEstimate(Spectrum const& balance_estimate, int tech_index, Float u, Float v, bool thread_safe_update = false) override
+		virtual void addOneTechniqueEstimate(Spectrum const& estimate, int tech_index, Float u, Float v, bool thread_safe_update = false) override
 		{
 			Math::Vector<int, 2> pixel = { u * m_width, v * m_height };
 			if (thread_safe_update)
 				m_mutex.lock();
-			m_image(pixel) += balance_estimate;
+			m_image(pixel) += estimate;
 			if (thread_safe_update)
 				m_mutex.unlock();
 		}

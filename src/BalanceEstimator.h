@@ -17,9 +17,9 @@ public:
 
     BalanceEstimator(BalanceEstimator const& other) = default;
 
-    virtual void addEstimate(Spectrum const& balance_estimate, const Float*, int) override
+    virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
     {
-        m_res += balance_estimate;
+        m_res += estimate * balance_weights[tech_index];
     }
 
     virtual void addOneTechniqueEstimate(Spectrum const& estimate, int) override

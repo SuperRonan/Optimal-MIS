@@ -176,8 +176,9 @@ namespace MIS
 			}
 		}
 
-		virtual void addEstimate(Spectrum const& balance_estimate, const Float* balance_weights, int tech_index, Float u, Float v, bool thread_safe_update = false) override
+		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index, Float u, Float v, bool thread_safe_update = false) override
 		{
+			const Spectrum balance_estimate = estimate * balance_weights[tech_index];
 			PixelData data = getPixelData(u, v);
 			if (thread_safe_update)
 				m_mutex.lock();
@@ -188,7 +189,7 @@ namespace MIS
 				{
 					const int mat_index = matTo1D(i, j);
 					Float tmp = balance_weights[i] * balance_weights[j];
-					data.techMatrix[mat_index] = data.techMatrix[mat_index] + tmp;
+					data.techMatrix[mat_index] += tmp;
 				}
 			}
 			if (!balance_estimate.isBlack())
@@ -199,7 +200,7 @@ namespace MIS
 					for (int i = 0; i < m_numtechs; ++i)
 					{
 						Float tmp = balance_weights[i] * balance_estimate[k];
-						vector[i] = vector[i] + tmp;
+						vector[i] += tmp;
 					}
 				}
 			}
@@ -207,18 +208,18 @@ namespace MIS
 				m_mutex.unlock();
 		}
 
-		virtual void addOneTechniqueEstimate(Spectrum const& balance_estimate, int tech_index, Float u, Float v, bool thread_safe_update = false) override
+		virtual void addOneTechniqueEstimate(Spectrum const& estimate, int tech_index, Float u, Float v, bool thread_safe_update = false) override
 		{
 			PixelData data = getPixelData(u, v);
 			int mat_index = matTo1D(tech_index, tech_index);
 			if (thread_safe_update)
 				m_mutex.lock();
 			++data.sampleCount[tech_index];
-			data.techMatrix[mat_index] = data.techMatrix[mat_index] + 1.0;
+			data.techMatrix[mat_index] += 1.0;
 			for (int k = 0; k < spectrumDim(); ++k)
 			{
 				StorageFloat* vector = data.contribVector + k * m_numtechs;
-				vector[tech_index] = vector[tech_index] + balance_estimate[k];
+				vector[tech_index] += estimate[k];
 			}
 			if (thread_safe_update)
 				m_mutex.unlock();

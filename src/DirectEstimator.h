@@ -81,8 +81,9 @@ namespace MIS
 			m_MVector[tech_index] = n;
 		}
 
-		virtual void addEstimate(Spectrum const& balance_estimate, const Float* balance_weights, int tech_index) override
+		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
 		{
+			const Spectrum balance_estimate = estimate * balance_weights[tech_index];
 			++m_sample_count[tech_index];
 			for (int i = 0; i < m_numtechs; ++i)
 			{
@@ -111,7 +112,7 @@ namespace MIS
 		{
 			const int mat_index = matTo1D(tech_index, tech_index);
 			++m_sample_count[tech_index];
-			m_matrix_data[mat_index] += 1.0; // this is not really necessary, it could be done implicitely during the solving function
+			m_matrix_data[mat_index] += 1.0; // this is not really necessary, it could be done implicitely during the solving function, but it is cleaner.
 			for (int k = 0; k < Spectrum::nSamples; ++k)
 			{
 				(m_vectors_data + m_numtechs * k)[tech_index] += estimate[k];
