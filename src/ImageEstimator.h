@@ -20,7 +20,7 @@ namespace MIS
 
 		constexpr static int spectrumDim()
 		{
-			return Spectrum::nSamples;
+			return Spectrum::size();
 		}
 
 		int PixelTo1D(int i, int j)const

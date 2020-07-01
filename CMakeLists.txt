@@ -19,7 +19,7 @@ ${SRC_DIR}/Estimator.h ${SRC_DIR}/BalanceEstimator.h ${SRC_DIR}/DirectEstimator.
 ${SRC_DIR}/ImageEstimator.h ${SRC_DIR}/ImageBalanceEstimator.h ${SRC_DIR}/ImageDirectEstimator.h
 ${SRC_DIR}/Parallel.h
 )
-SET(EXAMPLE_FILES ${EXAMPLE_DIR}/Example.cpp)
+SET(EXAMPLE_FILES ${EXAMPLE_DIR}/Example.cpp ${EXAMPLE_DIR}/Spectrum.h)
 
 # Eigen
 FIND_PACKAGE(Eigen3 3.3 REQUIRED NO_MODULE)
