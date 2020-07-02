@@ -1,6 +1,8 @@
 #pragma once
+#include <vector>
 #include <Estimator.h>
 #include <Eigen/Dense>
+#include <SpectrumWrapper.h>
 namespace MIS
 {
 	template <class Spectrum, class Float = double>
@@ -14,6 +16,9 @@ namespace MIS
 		using MatrixT = Eigen::Matrix<SolvingFloat, Eigen::Dynamic, Eigen::Dynamic>;
 		using VectorT = Eigen::Matrix<SolvingFloat, Eigen::Dynamic, 1>;
 		using SolverT = Eigen::ColPivHouseholderQR<MatrixT>;
+
+		using Wrapper = SpectrumWrapper<Spectrum>;
+		using CWrapper = SpectrumWrapper<const Spectrum>;
 
 		// msize => matrix size
 		// also the vector offset
@@ -46,10 +51,10 @@ namespace MIS
 		DirectEstimator(int N) :
 			Estimator(N),
 			msize(N* (N + 1) / 2),
-			m_data((msize + Spectrum::nSamples * N) * sizeof(StorageFloat) + N * sizeof(StorageUInt), 0),
+			m_data((msize + Wrapper::size() * N) * sizeof(StorageFloat) + N * sizeof(StorageUInt), 0),
 			m_matrix_data((StorageFloat*)m_data.data()),
 			m_vectors_data(((StorageFloat*)m_data.data()) + msize),
-			m_sample_count((StorageUInt*)(m_data.data() + ((msize + Spectrum::nSamples * N) * sizeof(StorageFloat)))),
+			m_sample_count((StorageUInt*)(m_data.data() + ((msize + Wrapper::size() * N) * sizeof(StorageFloat)))),
 			m_sample_per_technique(N, 1),
 			m_matrix(N, N),
 			m_vector(N),
@@ -65,7 +70,7 @@ namespace MIS
 			m_data(other.m_data),
 			m_matrix_data((StorageFloat*)m_data.data()),
 			m_vectors_data(((StorageFloat*)m_data.data()) + msize),
-			m_sample_count((StorageUInt*)(m_data.data() + ((msize + Spectrum::nSamples * m_numtechs) * sizeof(StorageFloat)))),
+			m_sample_count((StorageUInt*)(m_data.data() + ((msize + Wrapper::size() * m_numtechs) * sizeof(StorageFloat)))),
 			m_sample_per_technique(other.m_sample_per_technique),
 			m_matrix(other.m_matrix),
 			m_vector(other.m_vector),
@@ -83,7 +88,9 @@ namespace MIS
 
 		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
 		{
-			const Spectrum balance_estimate = estimate * balance_weights[tech_index];
+			assert(balance_weights != nullptr);
+			const Spectrum _balance_estimate = estimate * balance_weights[tech_index];
+			const CWrapper balance_estimate = _balance_estimate;
 			++m_sample_count[tech_index];
 			for (int i = 0; i < m_numtechs; ++i)
 			{
@@ -94,9 +101,9 @@ namespace MIS
 					m_matrix_data[mat_index] += tmp;
 				}
 			}
-			if (!balance_estimate.isBlack())
+			if (!balance_estimate.isZero())
 			{
-				for (int k = 0; k < Spectrum::nSamples; ++k)
+				for (int k = 0; k < Wrapper::size(); ++k)
 				{
 					StorageFloat* vector = m_vectors_data + m_numtechs * k;
 					for (int i = 0; i < m_numtechs; ++i)
@@ -110,12 +117,13 @@ namespace MIS
 
 		virtual void addOneTechniqueEstimate(Spectrum const& estimate, int tech_index)override
 		{
+			const CWrapper _estimate = estimate;
 			const int mat_index = matTo1D(tech_index, tech_index);
 			++m_sample_count[tech_index];
 			m_matrix_data[mat_index] += 1.0; // this is not really necessary, it could be done implicitely during the solving function, but it is cleaner.
-			for (int k = 0; k < Spectrum::nSamples; ++k)
+			for (int k = 0; k < Wrapper::size(); ++k)
 			{
-				(m_vectors_data + m_numtechs * k)[tech_index] += estimate[k];
+				(m_vectors_data + m_numtechs * k)[tech_index] += _estimate[k];
 			}
 		}
 
@@ -144,9 +152,10 @@ namespace MIS
 
 		virtual Spectrum solve(int iterations)override
 		{
-			Spectrum res = 0;
+			Spectrum _res = 0;
+			Wrapper res = _res;
 			bool matrix_solved = false;
-			for (int k = 0; k < Spectrum::nSamples; ++k)
+			for (int k = 0; k < Wrapper::size(); ++k)
 			{
 				bool is_zero;
 				const StorageFloat* cvector = m_vectors_data + k * m_numtechs;

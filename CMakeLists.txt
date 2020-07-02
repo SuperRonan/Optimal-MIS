@@ -17,7 +17,7 @@ SET(EXAMPLE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/example)
 SET(OPTIMIS_FILES 
 ${SRC_DIR}/Estimator.h ${SRC_DIR}/BalanceEstimator.h ${SRC_DIR}/DirectEstimator.h
 ${SRC_DIR}/ImageEstimator.h ${SRC_DIR}/ImageBalanceEstimator.h ${SRC_DIR}/ImageDirectEstimator.h
-${SRC_DIR}/Parallel.h
+${SRC_DIR}/Parallel.h ${SRC_DIR}/SpectrumWrapper.h
 )
 SET(EXAMPLE_FILES ${EXAMPLE_DIR}/Example.cpp ${EXAMPLE_DIR}/Spectrum.h)
 
