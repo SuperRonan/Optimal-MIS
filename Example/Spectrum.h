@@ -40,6 +40,23 @@ namespace MISExample
             return me;
         }
 
+        bool operator==(Spectrum const& other)const
+        {
+            for (int i = 0; i < N; ++i)
+                if (me[i] != other[i])   return false;
+            return true;
+        }
+
+        bool operator!=(Spectrum const& other)const
+        {
+            return !(me == other);
+        }
+
+        bool isZero()const
+        {
+            return me == Float(0);
+        }
+
 
         Float& operator[](int i)
         {
