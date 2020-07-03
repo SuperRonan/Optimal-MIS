@@ -25,7 +25,12 @@ namespace MIS
             Estimator(N)
         {}
 
-        SimpleEstimator(SimpleEstimator const& other) = default;
+        SimpleEstimator(SimpleEstimator const&) = default;
+
+        virtual void addOneTechniqueEstimate(Spectrum const& estimate, int tech_index) override
+        {
+            m_result += estimate;
+        }
 
         virtual Spectrum solve(int iterations) override
         {

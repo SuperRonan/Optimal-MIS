@@ -19,12 +19,15 @@ namespace MIS
 
 	public:
 
+		using Spectrum_Type = Spectrum;
+		using Float_Type = Float;
+
 		/// <param name="N"> The number of techniques.</param>
 		Estimator(int N):
 			m_numtechs(N)
 		{}
 
-		Estimator(Estimator const& other) = default;
+		Estimator(Estimator const&) = default;
 
 		/// <summary>
 		/// Sets the number of sample per iteration for a technique. 
