@@ -1,40 +1,28 @@
 #pragma once
 
-#include <Estimator.h>
+#include <SimpleEstimator.h>
 
 namespace MIS
 {
-template <class Spectrum, class Float = double>
-class BalanceEstimator: public Estimator<Spectrum, Float>
-{
-protected:
-    Spectrum m_res = 0;
-public:
-
-    BalanceEstimator(int N):
-        Estimator(N)
-    {}
-
-    BalanceEstimator(BalanceEstimator const& other) = default;
-
-    virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
+    template <class Spectrum, class Float = double>
+    class BalanceEstimator: public SimpleEstimator<Spectrum, Float>
     {
-        m_res += estimate * balance_weights[tech_index];
-    }
+    public:
 
-    virtual void addOneTechniqueEstimate(Spectrum const& estimate, int) override
-    {
-        m_res += estimate;
-    }
+        BalanceEstimator(int N):
+            SimpleEstimator(N)
+        {}
 
-    virtual Spectrum solve(int iterations) override
-    {
-        return m_res / (Float)iterations;
-    }
+        BalanceEstimator(BalanceEstimator const& other) = default;
 
-    virtual void reset() override
-    {
-        m_res = 0;
-    }
-};
+        virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
+        {
+            m_result += estimate * balance_weights[tech_index];
+        }
+
+        virtual void addOneTechniqueEstimate(Spectrum const& estimate, int) override
+        {
+            m_result += estimate;
+        }
+    };
 }
