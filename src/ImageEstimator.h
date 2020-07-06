@@ -3,6 +3,7 @@
 #include <Parallel.h>
 #include <cassert>
 #include <mutex>
+#include <SpectrumWrapper.h>
 
 namespace MIS
 {
@@ -22,13 +23,15 @@ namespace MIS
 	{
 	protected:
 
+		using Wrapper = SpectrumWrapper<Spectrum>;
+
 		const int m_numtechs;
 
 		const int m_width, m_height;
 
 		constexpr static int spectrumDim()
 		{
-			return Spectrum::size();
+			return Wrapper::size();
 		}
 
 		/// <summary>
@@ -37,15 +40,37 @@ namespace MIS
 		/// <param name="i">: Index of the col: usualy from left to right: -</param>
 		/// <param name="j">: Index of the row: usualy from top to bottom: |</param>
 		/// <returns>: The 1D index</returns>
-		int PixelTo1D(int i, int j)const
+		int pixelTo1D(int i, int j)const
 		{
 			if constexpr (ROW_MAJOR) // row major
 				return i * m_height + j;
 			else // col major
 				return j * m_width + i;
 		}
+		
+		template <class Function>
+		__forceinline void loopThroughImage(const Function& function)const
+		{
+			if constexpr (ROW_MAJOR)
+			{
+#pragma omp parallel for schedule(dynamic)
+				for (int i = 0; i < m_width; ++i)
+					for (int j = 0; j < m_height; ++j)
+						function(i, j);
+			}
+			else
+			{
+#pragma omp parallel for schedule(dynamic)
+				for (int j = 0; j < m_height; ++j)
+					for (int i = 0; i < m_width; ++i)
+						function(i, j);
+			}
+		}
 
 	public:
+
+		using Spectrum_Type = Spectrum;
+		using Float_Type = Float;
 
 		/// <param name="N">: The number of techniques.</param>
 		ImageEstimator(int N, int width, int height) :
@@ -97,7 +122,7 @@ namespace MIS
 		/// </summary>
 		/// <param name="res">: A 1D array of size width * height to be add-filled with the result of the estimator. For each pixel, the estimator's estimate is added to the pixel in the res array.</param>
 		/// <param name="iterations">: The total number of iterations the algorithm ran.</param>
-		virtual void solve(Spectrum * res, int iterations) = 0;
+		virtual void solve(Spectrum* res, int iterations) = 0;
 
 		/// <summary>
 		/// Function to launch the debug, only for the direct estimator. This function is currently deprecated.
@@ -111,17 +136,5 @@ namespace MIS
 		virtual void debug(int iterations, bool col_sum, bool matrix, bool vec, bool alpha)const
 		{}
 	};
-	
-	template<class Float, bool ROW_MAJOR>
-	constexpr int ImageEstimator<double, Float, ROW_MAJOR>::spectrumDim()
-	{
-		return 1;
-	}
-
-	template<class Float, bool ROW_MAJOR>
-	constexpr int ImageEstimator<float, Float, ROW_MAJOR>::spectrumDim()
-	{
-		return 1;
-	}
 
 } // namespace MIS

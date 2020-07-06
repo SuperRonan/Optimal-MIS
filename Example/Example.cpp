@@ -7,6 +7,7 @@
 #include <CutOffEstimator.h>
 #include <MaximumEstimator.h>
 #include <NaiveEstimator.h>
+#include <ImageBalanceEstimator.h>
 #include <string>
 
 template <class Stream, class Float, int N>
@@ -61,6 +62,50 @@ void testEstimators()
     testEstimator<MIS::DirectEstimator<Spectrum, Float>>();
 }
 
+template <class ImageEstimator>
+void testImageEstimator()
+{
+    using Float = ImageEstimator::Float_Type;
+    using Spectrum = ImageEstimator::Spectrum_Type;
+    const int N = 2;
+    int w = 10;
+    int h = 10;
+    
+    ImageEstimator estimator(N, w, h);
+
+    estimator.setSampleForTechnique(1, 2);
+    
+    for (int i = 0; i < w; ++i)  for (int j = 0; j < h; ++j)
+    {
+        Float u = Float(i) / Float(w);
+        Float v = Float(j) / Float(h);
+        Spectrum estimate = u + v;
+
+        Float weights[N];
+        weights[0] = u + v;
+        weights[1] = 0.7;
+        estimator.addEstimate(estimate, weights, 0, u, v);
+
+        estimate = u + v;
+        weights[0] = u + v;
+        weights[1] = 0.8;
+        estimator.addEstimate(estimate, weights, 1, u, v);
+
+        estimator.addOneTechniqueEstimate(estimate * 2, 1, u, v);
+    }
+    estimator.loop();
+    std::vector<Spectrum> res(w * h, 0);
+    estimator.solve(res.data(), 1);
+
+
+}
+
+template <class Spectrum, class Float = double>
+void testImageEstimators()
+{
+    testImageEstimator<MIS::ImageBalanceEstimator<Spectrum, Float, true>>();
+}
+
 int main(int argc, char ** argv)
 {
     using Float = double;
@@ -69,4 +114,6 @@ int main(int argc, char ** argv)
     testEstimators<Float, Float>();
     testEstimators<RGBColor, Float>();
 
+    testImageEstimators<Float, Float>();
+    testImageEstimators<RGBColor, Float>();
 }

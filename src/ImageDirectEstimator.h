@@ -67,7 +67,7 @@ namespace MIS
 		PixelData getPixelData(Float u, Float v)const
 		{
 			const Math::Vector<int, 2> pixel(u * m_width, v * m_height);
-			const int index = PixelTo1D(pixel[0], pixel[1]);
+			const int index = pixelTo1D(pixel[0], pixel[1]);
 			return getPixelData(index);
 		}
 
