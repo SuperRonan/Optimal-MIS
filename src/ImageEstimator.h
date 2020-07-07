@@ -51,8 +51,8 @@ namespace MIS
 
 		int pixelTo1D(Float u, Float v)const
 		{
-			int i = u * m_width;
-			int j = v * m_height;
+			int i = int(u * m_width);
+			int j = int(v * m_height);
 			return pixelTo1D(i, j);
 
 		}
@@ -62,14 +62,14 @@ namespace MIS
 		{
 			if constexpr (ROW_MAJOR)
 			{
-				Parallel::ParallelFor(0, m_width, [&](int i) {
+				Parallel::parallelFor(0, m_width, [&](int i) {
 					for (int j = 0; j < m_height; ++j)
 						function(i, j);
 					});
 			}
 			else
 			{
-				Parallel::ParallelFor(0, m_height, [&](int j) {
+				Parallel::parallelFor(0, m_height, [&](int j) {
 					for (int i = 0; i < m_width; ++i)
 						function(i, j);
 					});

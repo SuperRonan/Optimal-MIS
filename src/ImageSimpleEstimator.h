@@ -16,8 +16,8 @@ namespace MIS
 
 		Spectrum& pixel(Float u, Float v)
 		{
-			int i = u * m_width;
-			int j = v * m_height;
+			int i = int(u * m_width);
+			int j = int(v * m_height);
 			int id = pixelTo1D(i, j);
 			Spectrum& p = m_buffer[id];
 			return p;
