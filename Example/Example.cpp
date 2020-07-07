@@ -8,6 +8,8 @@
 #include <MaximumEstimator.h>
 #include <NaiveEstimator.h>
 #include <ImageBalanceEstimator.h>
+#include <ImageDirectEstimator.h>
+
 #include <string>
 
 template <class Stream, class Float, int N>
@@ -104,6 +106,7 @@ template <class Spectrum, class Float = double>
 void testImageEstimators()
 {
     testImageEstimator<MIS::ImageBalanceEstimator<Spectrum, Float, true>>();
+    testImageEstimator<MIS::ImageDirectEstimator<Spectrum, Float, true>>();
 }
 
 int main(int argc, char ** argv)

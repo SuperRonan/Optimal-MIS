@@ -49,7 +49,7 @@ public:
 	template <class Function>
 	__forceinline static void ParallelFor(int min, int max, Function const& function)
 	{
-		OMP_PARALLEL_FOR
+#pragma omp parallel for schedule(dynamic)
 			for (int i = min; i < max; ++i)
 			{
 				function(i);

@@ -4,6 +4,7 @@
 #include <cassert>
 #include <mutex>
 #include <SpectrumWrapper.h>
+#include <Parallel.h>
 
 namespace MIS
 {
@@ -47,23 +48,31 @@ namespace MIS
 			else // col major
 				return j * m_width + i;
 		}
+
+		int pixelTo1D(Float u, Float v)const
+		{
+			int i = u * m_width;
+			int j = v * m_height;
+			return pixelTo1D(i, j);
+
+		}
 		
 		template <class Function>
 		__forceinline void loopThroughImage(const Function& function)const
 		{
 			if constexpr (ROW_MAJOR)
 			{
-#pragma omp parallel for schedule(dynamic)
-				for (int i = 0; i < m_width; ++i)
+				Parallel::ParallelFor(0, m_width, [&](int i) {
 					for (int j = 0; j < m_height; ++j)
 						function(i, j);
+					});
 			}
 			else
 			{
-#pragma omp parallel for schedule(dynamic)
-				for (int j = 0; j < m_height; ++j)
+				Parallel::ParallelFor(0, m_height, [&](int j) {
 					for (int i = 0; i < m_width; ++i)
 						function(i, j);
+					});
 			}
 		}
 
