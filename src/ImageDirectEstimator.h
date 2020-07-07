@@ -2,8 +2,8 @@
 
 #include <ImageEstimator.h>
 #include <Eigen/Dense>
-#include <settings.h>
-#include <SpectrumWrapper.h>
+#include <utils/settings.h>
+#include <utils/SpectrumWrapper.h>
 
 namespace MIS
 {

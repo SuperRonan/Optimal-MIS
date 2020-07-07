@@ -1,10 +1,9 @@
 #pragma once
 
-#include <Parallel.h>
 #include <cassert>
 #include <mutex>
-#include <SpectrumWrapper.h>
-#include <Parallel.h>
+#include <utils/SpectrumWrapper.h>
+#include <utils/Parallel.h>
 
 namespace MIS
 {

@@ -2,7 +2,7 @@
 #include <vector>
 #include <Estimator.h>
 #include <Eigen/Dense>
-#include <SpectrumWrapper.h>
+#include <utils/SpectrumWrapper.h>
 namespace MIS
 {
 	template <class Spectrum, class Float = double>
