@@ -25,6 +25,8 @@ namespace MIS
 
 		CutOffEstimator(CutOffEstimator const&) = default;
 
+		CutOffEstimator(CutOffEstimator &&) = default;
+
 		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
 		{
 			int best_index = 0;

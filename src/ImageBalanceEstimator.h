@@ -14,6 +14,8 @@ namespace MIS
 
 		ImageBalanceEstimator(ImageBalanceEstimator const& other) = default;
 
+		ImageBalanceEstimator(ImageBalanceEstimator && other) = default;
+
 		virtual Float weight(const Float* balance_weights, int tech_index)const override
 		{
 			return balance_weights[tech_index];

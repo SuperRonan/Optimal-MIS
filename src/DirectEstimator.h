@@ -78,7 +78,20 @@ namespace MIS
 			m_MVector(other.m_MVector)
 		{}
 
-		DirectEstimator& operator=(DirectEstimator&&) = default;
+		DirectEstimator(DirectEstimator&& other) :
+			Estimator(std::move(other)),
+			msize(other.msize),
+			m_data(std::move(other.m_data)),
+			m_matrix_data((StorageFloat*)m_data.data()),
+			m_vectors_data(((StorageFloat*)m_data.data()) + msize),
+			m_sample_count((StorageUInt*)(m_data.data() + ((msize + Wrapper::size() * m_numtechs) * sizeof(StorageFloat)))),
+			m_sample_per_technique(std::move(other.m_sample_per_technique)),
+			m_matrix(std::move(other.m_matrix)),
+			m_vector(std::move(other.m_vector)),
+			m_solver(std::move(other.m_solver)),
+			m_MVector(std::move(other.m_MVector))
+		{}
+
 
 		virtual void setSampleForTechnique(int tech_index, int n)override
 		{

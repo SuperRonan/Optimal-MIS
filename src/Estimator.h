@@ -29,6 +29,8 @@ namespace MIS
 
 		Estimator(Estimator const&) = default;
 
+		Estimator(Estimator&&) = default;
+
 		/// <summary>
 		/// Sets the number of sample per iteration for a technique. 
 		/// </summary>

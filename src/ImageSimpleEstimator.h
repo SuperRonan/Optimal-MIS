@@ -34,6 +34,8 @@ namespace MIS
 
 		ImageSimpleEstimator(ImageSimpleEstimator const& other) = default;
 
+		ImageSimpleEstimator(ImageSimpleEstimator&& other) = default;
+
 		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index, Float u, Float v, bool thread_safe_update = false) override
 		{
 			Spectrum& p = pixel(u, v);

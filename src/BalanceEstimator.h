@@ -20,6 +20,8 @@ namespace MIS
 
         BalanceEstimator(BalanceEstimator const&) = default;
 
+        BalanceEstimator(BalanceEstimator &&) = default;
+
         virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
         {
             m_result += estimate * balance_weights[tech_index];

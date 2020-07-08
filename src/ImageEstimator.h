@@ -90,6 +90,8 @@ namespace MIS
 
 		ImageEstimator(ImageEstimator const& other) = default;
 
+		ImageEstimator(ImageEstimator&& other) = default;
+
 		/// <summary>
 		/// Sets the number of sample per iteration for a technique. 
 		/// </summary>

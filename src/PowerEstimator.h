@@ -26,6 +26,8 @@ namespace MIS
 		{}
 
 		PowerEstimator(PowerEstimator const&) = default;
+
+		PowerEstimator(PowerEstimator &&) = default;
 		
 		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
 		{

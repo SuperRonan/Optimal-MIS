@@ -21,6 +21,8 @@ namespace MIS
 
 		MaximumEstimator(MaximumEstimator const&) = default;
 
+		MaximumEstimator(MaximumEstimator &&) = default;
+
 		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
 		{
 			Float const& wt = balance_weights[tech_index];

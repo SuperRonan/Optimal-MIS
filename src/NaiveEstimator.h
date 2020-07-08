@@ -20,6 +20,8 @@ namespace MIS
 
 		NaiveEstimator(NaiveEstimator const&) = default;
 
+		NaiveEstimator(NaiveEstimator &&) = default;
+
 		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
 		{
 			int non_zero_techs = 0;
