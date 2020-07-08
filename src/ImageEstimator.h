@@ -34,6 +34,8 @@ namespace MIS
 			return Wrapper::size();
 		}
 
+	public:
+
 		/// <summary>
 		/// Returns the 1D index of a pixel in the image array
 		/// </summary>
@@ -75,7 +77,6 @@ namespace MIS
 			}
 		}
 
-	public:
 
 		using Spectrum_Type = Spectrum;
 		using Float_Type = Float;
