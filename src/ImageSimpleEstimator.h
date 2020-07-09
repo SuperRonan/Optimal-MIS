@@ -29,12 +29,19 @@ namespace MIS
 
 		ImageSimpleEstimator(int N, int width, int height):
 			ImageEstimator(N, width, height),
-			m_buffer(width * height, Spectrum(0))
+			m_buffer(size_t(width * height), Spectrum(0))
 		{}
 
-		ImageSimpleEstimator(ImageSimpleEstimator const& other) = default;
+		ImageSimpleEstimator(ImageSimpleEstimator const& other):
+			ImageEstimator(other),
+			m_buffer(other.m_buffer)
+		{}
 
-		ImageSimpleEstimator(ImageSimpleEstimator&& other) = default;
+		ImageSimpleEstimator(ImageSimpleEstimator&& other):
+			ImageEstimator(other),
+			m_buffer(std::move(other.m_buffer))
+		{}
+
 
 		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index, Float u, Float v, bool thread_safe_update = false) override
 		{

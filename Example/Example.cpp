@@ -31,7 +31,8 @@ void testEstimator()
 {
     // Just a function to check that it compiles well
     const int N = 2;
-    Estimator estimator(N);
+    Estimator _estimator(N);
+    Estimator estimator = _estimator;
     Estimator::Spectrum_Type estimate;
     Estimator::Float_Type weights[N];
 
@@ -73,8 +74,8 @@ void testImageEstimator()
     int w = 10;
     int h = 10;
     
-    ImageEstimator estimator(N, w, h);
-
+    ImageEstimator _estimator(N, w, h);
+    ImageEstimator estimator = _estimator;
     estimator.setSampleForTechnique(1, 2);
     
     for (int i = 0; i < w; ++i)  for (int j = 0; j < h; ++j)
