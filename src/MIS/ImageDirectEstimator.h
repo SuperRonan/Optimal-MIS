@@ -1,9 +1,9 @@
 #pragma once
 
-#include <ImageEstimator.h>
+#include "ImageEstimator.h"
 #include <Eigen/Dense>
-#include <utils/settings.h>
-#include <utils/SpectrumWrapper.h>
+#include "utils/settings.h"
+#include "utils/SpectrumWrapper.h"
 
 namespace MIS
 {

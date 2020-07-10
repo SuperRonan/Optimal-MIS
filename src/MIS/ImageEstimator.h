@@ -2,8 +2,8 @@
 
 #include <cassert>
 #include <mutex>
-#include <utils/SpectrumWrapper.h>
-#include <utils/Parallel.h>
+#include "utils/SpectrumWrapper.h"
+#include "utils/Parallel.h"
 
 namespace MIS
 {

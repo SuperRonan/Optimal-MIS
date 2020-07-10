@@ -40,5 +40,5 @@ target_link_libraries(OptiMIS INTERFACE Eigen3::Eigen)
 
 # Example 
 add_executable(Example ${EXAMPLE_FILES})
-
+INCLUDE_DIRECTORIES(src)
 target_link_libraries(Example OptiMIS)

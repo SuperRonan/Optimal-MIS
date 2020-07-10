@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SimpleEstimator.h>
+#include "SimpleEstimator.h"
 #include <algorithm>
 
 namespace MIS

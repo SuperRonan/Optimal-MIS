@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
-#include <Estimator.h>
+#include "Estimator.h"
 #include <Eigen/Dense>
-#include <utils/SpectrumWrapper.h>
+#include "utils/SpectrumWrapper.h"
 namespace MIS
 {
 	template <class Spectrum, class Float = double>
