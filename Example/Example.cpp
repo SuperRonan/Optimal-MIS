@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Spectrum.h"
+
 #include <Estimator.h>
 #include <BalanceEstimator.h>
 #include <DirectEstimator.h>
@@ -7,8 +8,13 @@
 #include <CutOffEstimator.h>
 #include <MaximumEstimator.h>
 #include <NaiveEstimator.h>
+
 #include <ImageBalanceEstimator.h>
 #include <ImageDirectEstimator.h>
+#include <ImageCutOffEstimator.h>
+#include <ImageMaximumEstimator.h>
+#include <ImagePowerEstimator.h>>
+#include <ImageNaiveEstimator.h>
 
 #include <string>
 
@@ -108,6 +114,10 @@ void testImageEstimators()
 {
     testImageEstimator<MIS::ImageBalanceEstimator<Spectrum, Float, true>>();
     testImageEstimator<MIS::ImageDirectEstimator<Spectrum, Float, true>>();
+    testImageEstimator<MIS::ImagePowerEstimator<Spectrum, Float, true>>();
+    testImageEstimator<MIS::ImageNaiveEstimator<Spectrum, Float, true>>();
+    testImageEstimator<MIS::ImageCutOffEstimator<Spectrum, Float, true>>();
+    testImageEstimator<MIS::ImageMaximumEstimator<Spectrum, Float, true>>();
 }
 
 int main(int argc, char ** argv)

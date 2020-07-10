@@ -28,7 +28,7 @@ namespace MIS
 			for (int i = 0; i < m_numtechs; ++i)
 				if (balance_weights[i] > 0)
 					++non_zero_techs;
-			Float weight = 1.0 / Float(non_zero_techs);
+			Float weight = Float(1.0) / Float(non_zero_techs);
 			m_result += estimate * weight;
 		}
 
