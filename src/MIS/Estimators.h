@@ -1,0 +1,7 @@
+#include "Estimator.h"
+#include "BalanceEstimator.h"
+#include "DirectEstimator.h"
+#include "PowerEstimator.h"
+#include "CutOffEstimator.h"
+#include "MaximumEstimator.h"
+#include "NaiveEstimator.h"

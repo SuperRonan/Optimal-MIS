@@ -15,9 +15,11 @@ namespace MIS
 	{
 	protected:
 
-		const int m_numtechs;
+		int m_numtechs;
 
 	public:
+
+		int numTechs()const { return m_numtechs; }
 
 		using Spectrum_Type = Spectrum;
 		using Float_Type = Float;

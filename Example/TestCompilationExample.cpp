@@ -1,20 +1,9 @@
 #include <iostream>
 #include "Spectrum.h"
 
-#include <MIS/Estimator.h>
-#include <MIS/BalanceEstimator.h>
-#include <MIS/DirectEstimator.h>
-#include <MIS/PowerEstimator.h>
-#include <MIS/CutOffEstimator.h>
-#include <MIS/MaximumEstimator.h>
-#include <MIS/NaiveEstimator.h>
+#include <MIS/Estimators.h>
           
-#include <MIS/ImageBalanceEstimator.h>
-#include <MIS/ImageDirectEstimator.h>
-#include <MIS/ImageCutOffEstimator.h>
-#include <MIS/ImageMaximumEstimator.h>
-#include <MIS/ImagePowerEstimator.h>>
-#include <MIS/ImageNaiveEstimator.h>
+#include <MIS/ImageEstimators.h>
 
 #include <string>
 

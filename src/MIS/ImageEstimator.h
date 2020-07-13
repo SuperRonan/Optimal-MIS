@@ -25,9 +25,9 @@ namespace MIS
 
 		using Wrapper = SpectrumWrapper<Spectrum>;
 
-		const int m_numtechs;
+		int m_numtechs;
 
-		const int m_width, m_height;
+		int m_width, m_height;
 
 		constexpr static int spectrumDim()
 		{
@@ -76,6 +76,13 @@ namespace MIS
 					});
 			}
 		}
+
+		int numTechs()const { return m_numtechs; }
+
+		int width()const { return m_width; }
+
+		int height()const { return m_height; }
+
 
 
 		using Spectrum_Type = Spectrum;

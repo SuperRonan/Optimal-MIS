@@ -15,13 +15,14 @@ SET(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/MIS)
 SET(EXAMPLE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/example)
 
 SET(OPTIMIS_FILES 
+${SRC_DIR}/Estimators.h ${SRC_DIR}/ImageEstimators.h
 ${SRC_DIR}/Estimator.h ${SRC_DIR}/SimpleEstimator.h ${SRC_DIR}/BalanceEstimator.h ${SRC_DIR}/DirectEstimator.h ${SRC_DIR}/PowerEstimator.h ${SRC_DIR}/NaiveEstimator.h ${SRC_DIR}/CutOffEstimator.h ${SRC_DIR}/MaximumEstimator.h
 ${SRC_DIR}/ImageEstimator.h ${SRC_DIR}/ImageSimpleEstimator.h ${SRC_DIR}/ImageBalanceEstimator.h ${SRC_DIR}/ImageDirectEstimator.h ${SRC_DIR}/ImagePowerEstimator.h ${SRC_DIR}/ImageNaiveEstimator.h ${SRC_DIR}/ImageCutOffEstimator.h ${SRC_DIR}/ImageMaximumEstimator.h
 )
 
 SET(OPTIMIS_UTILS_FILES ${SRC_DIR}/utils/Parallel.h ${SRC_DIR}/utils/SpectrumWrapper.h ${SRC_DIR}/utils/settings.h)
 
-SET(EXAMPLE_FILES ${EXAMPLE_DIR}/Example.cpp ${EXAMPLE_DIR}/Spectrum.h)
+SET(TEST_COMPILATION_EXAMPLE_FILES ${EXAMPLE_DIR}/TestCompilationExample.cpp ${EXAMPLE_DIR}/Spectrum.h)
 
 # Eigen
 FIND_PACKAGE(Eigen3 3.3 REQUIRED NO_MODULE)
@@ -38,7 +39,7 @@ target_sources(OptiMIS INTERFACE ${OPTIMIS_FILES} ${OPTIMIS_UTILS_FILES})
 target_include_directories(OptiMIS INTERFACE ${SRC_DIR})
 target_link_libraries(OptiMIS INTERFACE Eigen3::Eigen)
 
-# Example 
-add_executable(Example ${EXAMPLE_FILES})
+# TestCompilationExample
+add_executable(TestCompilationExample ${TEST_COMPILATION_EXAMPLE_FILES})
 INCLUDE_DIRECTORIES(src)
-target_link_libraries(Example OptiMIS)
+target_link_libraries(TestCompilationExample OptiMIS)
