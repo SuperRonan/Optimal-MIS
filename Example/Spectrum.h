@@ -157,3 +157,18 @@ namespace MISExample
 #undef me
     };
 }
+
+
+template <class Stream, class Float, int N>
+Stream& operator<<(Stream& stream, MISExample::Spectrum<Float, N> const& spec)
+{
+    stream << '[';
+    for (int i = 0; i < spec.size(); ++i)
+    {
+        stream << std::to_string(spec[i]);
+        if (i < spec.size() - 1)
+            stream << ", ";
+    }
+    stream << "]";
+    return stream;
+}
