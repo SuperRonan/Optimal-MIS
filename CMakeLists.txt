@@ -25,7 +25,7 @@ SET(OPTIMIS_UTILS_FILES ${SRC_DIR}/utils/Parallel.h ${SRC_DIR}/utils/SpectrumWra
 SET(TEST_COMPILATION_EXAMPLE_FILES ${EXAMPLE_DIR}/TestCompilationExample.cpp ${EXAMPLE_DIR}/Spectrum.h)
 
 # Eigen
-FIND_PACKAGE(Eigen3 3.3 REQUIRED NO_MODULE)
+#FIND_PACKAGE(Eigen3 3.3 REQUIRED NO_MODULE)
 INCLUDE_DIRECTORIES(ext/Eigen)
 
 # Actual Optimal-MIS
@@ -37,7 +37,7 @@ SOURCE_GROUP("MIS/utils" OPTIMIS_UTILS_FILES)
 
 target_sources(OptiMIS INTERFACE ${OPTIMIS_FILES} ${OPTIMIS_UTILS_FILES})
 target_include_directories(OptiMIS INTERFACE ${SRC_DIR})
-target_link_libraries(OptiMIS INTERFACE Eigen3::Eigen)
+#target_link_libraries(OptiMIS INTERFACE Eigen3::Eigen)
 
 # TestCompilationExample
 add_executable(TestCompilationExample ${TEST_COMPILATION_EXAMPLE_FILES})
