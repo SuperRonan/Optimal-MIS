@@ -103,7 +103,7 @@ namespace MIS
 
 #if OPTIMIS_ONE_CONTIGUOUS_ARRAY
 		ImageDirectEstimator(int N, int width, int height) :
-			ImageEstimator(N, width, height),
+			ImageEstimator(N, width, height, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
 			m_pixel_data_size(msize * sizeof(StorageFloat) + spectrumDim() * m_numtechs * sizeof(StorageFloat) + m_numtechs * sizeof(StorageUInt)),
 			m_vector_ofsset(msize * sizeof(StorageFloat)),
@@ -133,7 +133,7 @@ namespace MIS
 		{}
 #else
 		ImageDirectEstimator(int N, int width, int height) :
-			ImageEstimator(N, width, height),
+			ImageEstimator(N, width, height, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
 			m_sample_per_technique(std::vector<unsigned int>(m_numtechs, 1))
 		{

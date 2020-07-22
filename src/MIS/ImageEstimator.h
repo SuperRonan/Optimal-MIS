@@ -4,6 +4,7 @@
 #include <mutex>
 #include "utils/SpectrumWrapper.h"
 #include "utils/Parallel.h"
+#include "Heuristics.h"
 
 namespace MIS
 {
@@ -35,6 +36,8 @@ namespace MIS
 		}
 
 	public:
+
+		const Heuristic m_heuristic;
 
 		/// <summary>
 		/// Returns the 1D index of a pixel in the image array
@@ -89,10 +92,11 @@ namespace MIS
 		using Float_Type = Float;
 
 		/// <param name="N">: The number of techniques.</param>
-		ImageEstimator(int N, int width, int height) :
+		ImageEstimator(int N, int width, int height, Heuristic h) :
 			m_numtechs(N),
 			m_width(width),
-			m_height(height)
+			m_height(height),
+			m_heuristic(h)
 		{}
 
 		ImageEstimator(ImageEstimator const& other) = default;

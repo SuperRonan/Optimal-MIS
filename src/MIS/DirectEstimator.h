@@ -49,7 +49,7 @@ namespace MIS
 	public:
 
 		DirectEstimator(int N) :
-			Estimator(N),
+			Estimator(N, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
 			m_data((msize + Wrapper::size() * N) * sizeof(StorageFloat) + N * sizeof(StorageUInt), 0),
 			m_matrix_data((StorageFloat*)m_data.data()),

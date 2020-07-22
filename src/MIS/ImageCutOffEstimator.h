@@ -14,7 +14,7 @@ namespace MIS
 	public:
 
 		ImageCutOffEstimator(int N, int width, int height, Float alpha=0.5):
-			ImageSimpleEstimator(N, width, height),
+			ImageSimpleEstimator(N, width, height, Heuristic::CutOff),
 			m_alpha(alpha)
 		{}
 

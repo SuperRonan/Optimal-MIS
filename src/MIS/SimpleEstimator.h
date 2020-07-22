@@ -21,8 +21,8 @@ namespace MIS
 
     public:
 
-        SimpleEstimator(int N):
-            Estimator(N)
+        SimpleEstimator(int N, Heuristic h):
+            Estimator(N, h)
         {}
 
         SimpleEstimator(SimpleEstimator const&) = default;

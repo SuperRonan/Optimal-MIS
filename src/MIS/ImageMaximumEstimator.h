@@ -10,7 +10,7 @@ namespace MIS
 	public:
 
 		ImageMaximumEstimator(int N, int width, int height) :
-			ImageSimpleEstimator(N, width, height)
+			ImageSimpleEstimator(N, width, height, Heuristic::Maximum)
 		{}
 
 		ImageMaximumEstimator(ImageMaximumEstimator const& other) = default;

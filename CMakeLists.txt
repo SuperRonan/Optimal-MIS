@@ -15,7 +15,7 @@ SET(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/MIS)
 SET(EXAMPLE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/example)
 
 SET(OPTIMIS_FILES 
-${SRC_DIR}/Estimators.h ${SRC_DIR}/ImageEstimators.h
+${SRC_DIR}/Estimators.h ${SRC_DIR}/ImageEstimators.h ${SRC_DIR}/Heuristics.h
 ${SRC_DIR}/Estimator.h ${SRC_DIR}/SimpleEstimator.h ${SRC_DIR}/BalanceEstimator.h ${SRC_DIR}/DirectEstimator.h ${SRC_DIR}/PowerEstimator.h ${SRC_DIR}/NaiveEstimator.h ${SRC_DIR}/CutOffEstimator.h ${SRC_DIR}/MaximumEstimator.h
 ${SRC_DIR}/ImageEstimator.h ${SRC_DIR}/ImageSimpleEstimator.h ${SRC_DIR}/ImageBalanceEstimator.h ${SRC_DIR}/ImageDirectEstimator.h ${SRC_DIR}/ImagePowerEstimator.h ${SRC_DIR}/ImageNaiveEstimator.h ${SRC_DIR}/ImageCutOffEstimator.h ${SRC_DIR}/ImageMaximumEstimator.h
 )

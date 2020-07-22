@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Heuristics.h"
+
 namespace MIS
 {
 	/// <summary>
@@ -19,14 +21,17 @@ namespace MIS
 
 	public:
 
+		const Heuristic m_heuristic;
+
 		int numTechs()const { return m_numtechs; }
 
 		using Spectrum_Type = Spectrum;
 		using Float_Type = Float;
 
 		/// <param name="N"> The number of techniques.</param>
-		Estimator(int N):
-			m_numtechs(N)
+		Estimator(int N, Heuristic h):
+			m_numtechs(N),
+			m_heuristic(h)
 		{}
 
 		Estimator(Estimator const&) = default;

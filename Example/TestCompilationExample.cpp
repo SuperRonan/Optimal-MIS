@@ -7,7 +7,9 @@
 
 #include <string>
 
-
+const std::vector<MIS::Heuristic> heuristics = { MIS::Heuristic::Balance,
+        MIS::Heuristic::CutOff, MIS::Heuristic::Maximum, MIS::Heuristic::Power,
+        MIS::Heuristic::Naive, MIS::Heuristic::Direct };
 
 template <class Estimator>
 void testEstimator()
@@ -33,7 +35,7 @@ void testEstimator()
 
     estimator.addOneTechniqueEstimate(estimate * 2, 1);
 
-    std::cout << "Estimator result: " << estimator.solve(1)<<std::endl;
+    std::cout << "Estimator " << (int)estimator.m_heuristic << " result: " << estimator.solve(1) << std::endl;
     estimator.reset();
 }
 
@@ -46,6 +48,36 @@ void testEstimators()
     testEstimator<MIS::CutOffEstimator<Spectrum, Float>>();
     testEstimator<MIS::MaximumEstimator<Spectrum, Float>>();
     testEstimator<MIS::DirectEstimator<Spectrum, Float>>();
+}
+
+template <class Spectrum, class Float>
+void testVirtualEstimators()
+{
+    const int N = 2;
+    
+    for (MIS::Heuristic h : heuristics)
+    {
+        MIS::Estimator<Spectrum, Float>* estimator = MIS::createEstimator<Spectrum, Float>(h, N);
+        Spectrum estimate;
+        Float weights[N];
+        
+        estimator->setSampleForTechnique(1, 2);
+
+        estimate = 1;
+        weights[0] = 0.5;
+        weights[1] = 0.7;
+        estimator->addEstimate(estimate, weights, 0);
+
+        estimate = 2.0;
+        weights[0] = 0.3;
+        weights[1] = 0.8;
+        estimator->addEstimate(estimate, weights, 1);
+
+        estimator->addOneTechniqueEstimate(estimate * 2, 1);
+
+        std::cout << "Estimator " << (int)estimator->m_heuristic << " result: " << estimator->solve(1) << std::endl;
+        estimator->reset();
+    }   
 }
 
 template <class ImageEstimator>
@@ -97,6 +129,42 @@ void testImageEstimators()
     testImageEstimator<MIS::ImageMaximumEstimator<Spectrum, Float, true>>();
 }
 
+template <class Spectrum, class Float = double>
+void testVirtualImageEstimators()
+{
+    const int N = 2;
+    int width = 10;
+    int height = 10;
+
+    for (MIS::Heuristic h : heuristics)
+    {
+        MIS::ImageEstimator<Spectrum, Float, true>* estimator = MIS::createImageEstimator<Spectrum, Float, true>(h, N, width, height);
+        estimator->setSampleForTechnique(1, 2);
+
+        for (int i = 0; i < estimator->width(); ++i)  for (int j = 0; j < estimator->height(); ++j)
+        {
+            Float u = Float(i) / Float(width);
+            Float v = Float(j) / Float(height);
+            Spectrum estimate = u + v;
+
+            Float weights[N];
+            weights[0] = u + v;
+            weights[1] = 0.7;
+            estimator->addEstimate(estimate, weights, 0, u, v);
+
+            estimate = u + v;
+            weights[0] = u + v;
+            weights[1] = 0.8;
+            estimator->addEstimate(estimate, weights, 1, u, v);
+
+            estimator->addOneTechniqueEstimate(estimate * 2, 1, u, v);
+        }
+        estimator->loop();
+        std::vector<Spectrum> res(width * height, 0);
+        estimator->solve(res.data(), 1);
+    }
+}
+
 int main(int argc, char ** argv)
 {
     using Float = double;
@@ -105,6 +173,12 @@ int main(int argc, char ** argv)
     testEstimators<Float, Float>();
     testEstimators<RGBColor, Float>();
 
+    testVirtualEstimators<Float, Float>();
+    testVirtualEstimators<RGBColor, Float>();
+
     testImageEstimators<Float, Float>();
     testImageEstimators<RGBColor, Float>();
+
+    testVirtualImageEstimators<Float, Float>();
+    testVirtualImageEstimators<RGBColor, Float>();
 }

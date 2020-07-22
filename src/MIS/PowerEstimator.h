@@ -21,7 +21,7 @@ namespace MIS
 	public:
 
 		PowerEstimator(int N, Float beta=2.0):
-			SimpleEstimator(N),
+			SimpleEstimator(N, Heuristic::Power),
 			m_beta(beta)
 		{}
 

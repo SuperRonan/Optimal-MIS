@@ -15,7 +15,7 @@ namespace MIS
     public:
 
         BalanceEstimator(int N):
-            SimpleEstimator(N)
+            SimpleEstimator(N, Heuristic::Balance)
         {}
 
         BalanceEstimator(BalanceEstimator const&) = default;

@@ -14,7 +14,7 @@ namespace MIS
 	public:
 
 		ImagePowerEstimator(int N, int width, int height, Float beta=2.0) :
-			ImageSimpleEstimator(N, width, height),
+			ImageSimpleEstimator(N, width, height, Heuristic::Power),
 			m_beta(beta)
 		{}
 

@@ -27,8 +27,8 @@ namespace MIS
 
 	public:
 
-		ImageSimpleEstimator(int N, int width, int height):
-			ImageEstimator(N, width, height),
+		ImageSimpleEstimator(int N, int width, int height, Heuristic h):
+			ImageEstimator(N, width, height, h),
 			m_buffer(size_t(width * height), Spectrum(0))
 		{}
 

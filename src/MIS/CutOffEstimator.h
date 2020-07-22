@@ -19,7 +19,7 @@ namespace MIS
 	public:
 
 		CutOffEstimator(int N, Float alpha=0.5):
-			SimpleEstimator(N),
+			SimpleEstimator(N, Heuristic::CutOff),
 			m_alpha(alpha)
 		{}
 
