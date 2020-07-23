@@ -26,8 +26,10 @@ namespace MIS
 		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
 		{
 			Float const& wt = balance_weights[tech_index];
-			if (std::all_of(balance_weights, balance_weights + m_numtechs, [wt](Float wi) {return wt > wi; }))
-				m_result += estimate;
+			for (int i = 0; i < m_numtechs; ++i)
+				if (balance_weights[i] > wt)
+					return;
+			m_result += estimate;
 		}
 	};
 }

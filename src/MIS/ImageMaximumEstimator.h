@@ -20,9 +20,10 @@ namespace MIS
 		virtual Float weight(const Float* balance_weights, int tech_index) const override
 		{
 			Float const& wt = balance_weights[tech_index];
-			if (std::all_of(balance_weights, balance_weights + m_numtechs, [wt](Float wi) {return wt > wi; }))
-				return Float(1.0);
-			return Float(0);
+			for (int i = 0; i < m_numtechs; ++i)
+				if (balance_weights[i] > wt)
+					return Float(0);
+			return Float(1);
 		}
 	};
 }
