@@ -156,7 +156,7 @@ namespace MIS
 				const int mat_id = matTo1D(i, i);
 				Float elem = m_matrix_data[mat_id];
 				assert(elem >= 0);
-				if (std::isnan(elem) || std::isinf(elem) || elem < 0)	elem = 0;
+				if (std::isnan(elem) || std::isinf(elem))	elem = 0;
 				size_t expected = m_sample_per_technique[i] * (size_t)iterations;
 				size_t actually = m_sample_count[i];
 				m_matrix(i, i) = elem + (Float)(expected - actually); // Unsampled samples
@@ -175,7 +175,7 @@ namespace MIS
 				for (int i = 0; i < m_numtechs; ++i)
 				{
 					Float elem = cvector[i];
-					if (std::isnan(elem) || std::isinf(elem) || elem < 0)	elem = 0;
+					if (std::isnan(elem) || std::isinf(elem))	elem = 0;
 					m_vector[i] = elem;
 					is_zero = is_zero & (elem == 0);
 				}
