@@ -4,7 +4,7 @@ Practical implementation of Optimal MIS for Light Transport.
 This repository provides a C++ header only library of Practical Optimal Multiple Importance Sampling, as presented in the 
 [TODO: Practical Optimal MIS technical report](https://github.com/SuperRonan/Optimal-MIS), based on the original 
 [Optimal MIS paper](https://cgg.mff.cuni.cz/~jaroslav/papers/2019-optimal-mis/).
-We also made a [TODO: fork of PBRT]() using this library for an example in a renderer. 
+We also made a (https://github.com/SuperRonan/PBRT-Optimal-MIS) using this library for an example in a renderer. 
 
 
 The library provides two abstract classes, `Estimator` (in `src/MIS/Estimator.h`) and `ImageEstimator` (in `src/MIS/ImageEstimator.h`).
@@ -38,4 +38,9 @@ Optimal-MIS uses [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page), 
 If Eigen is not already included, it is a submodule of this repository, under `ext/Eigen`. 
 To include it with CMake, use: `INCLUDE_DIRECTORIES(PathToOptimal-MIS/ext/Eigen)`. 
 Make sure it is `ext/Eigen` that is added to your include directories, not `ext/Eigen/Eigen`.
-You can also do some CMake black magic I don't really know about (like `FIND_PACKAGE(Eigen3 3.3 REQUIRED NO_MODULE)`).
+You can also do some CMake black magic I don't really know about (like `FIND_PACKAGE(Eigen3 3.3 REQUIRED NO_MODULE)` or something).
+Finaly, OptiMIS can benefit from OpenMP. 
+It can easily be activated in CMake with:  
+`FIND_PACKAGE(OpenMP)`  
+`SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")`  
+`SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")`  
