@@ -58,6 +58,8 @@ namespace MIS
 		VectorT m_MVector;
 		VectorT m_alphas[Wrapper::size()];
 
+		Spectrum m_sum_alpha_ni;
+
 	public:
 
 		ProgressiveEstimator(int N, int U=4) :
@@ -74,7 +76,8 @@ namespace MIS
 			m_matrix(N, N),
 			m_vector(N),
 			m_solver(N, N),
-			m_MVector(N)
+			m_MVector(N),
+			m_sum_alpha_ni(0)
 		{
 			const VectorT zero = VectorT(N).setZero();
 			std::fill_n(m_alphas, Wrapper::size(), zero);
@@ -95,7 +98,8 @@ namespace MIS
 			m_matrix(other.m_matrix),
 			m_vector(other.m_vector),
 			m_solver(other.m_solver),
-			m_MVector(other.m_MVector)
+			m_MVector(other.m_MVector),
+			m_sum_alpha_ni(other.m_sum_alpha_ni)
 		{
 			std::copy_n(other.m_alphas, Wrapper::size(), m_alphas);
 		}
@@ -114,7 +118,8 @@ namespace MIS
 			m_matrix(std::move(other.m_matrix)),
 			m_vector(std::move(other.m_vector)),
 			m_solver(std::move(other.m_solver)),
-			m_MVector(std::move(other.m_MVector))
+			m_MVector(std::move(other.m_MVector)),
+			m_sum_alpha_ni(std::move(other.m_sum_alpha_ni))
 		{
 			for (int i = 0; i < Wrapper::size(); ++i)	m_alpha[i] = std::move(other.m_alpha[i]);
 		}
@@ -217,14 +222,10 @@ namespace MIS
 
 		virtual void loop() override
 		{
-			Wrapper result = m_result;
-			// Partial estimate of Fo: right hand side: sum of alpha N
-			for (int k = 0; k < Wrapper::size(); ++k)
-			{
-				result[k] += m_alphas[k].dot(m_MVector);
-			}
+			m_result += m_sum_alpha_ni;
 			
 			// Update the estimate of alpha 
+			Wrapper sum_alpha = m_sum_alpha_ni;
 			if (m_loop_counter != 0 && m_loop_counter % U == 0)
 			{
 				bool matrix_solved = false;
@@ -244,14 +245,15 @@ namespace MIS
 					{
 						if (!matrix_solved)
 						{
-							fillMatrix(m_loop_counter+1);
+							fillMatrix(m_loop_counter + 1);
 							m_solver = m_matrix.colPivHouseholderQr();
 							matrix_solved = true;
 						}
 						alpha = m_solver.solve(m_vector);
+						sum_alpha[k] = alpha.dot(m_MVector);
 					}
 					else
-						alpha.setZero();
+						alpha.setZero(), sum_alpha[k] = 0;
 				}
 			}
 			++m_loop_counter;
@@ -262,6 +264,7 @@ namespace MIS
 			std::fill(m_data.begin(), m_data.end(), 0);
 			for (int k = 0; k < Wrapper::size(); ++k)	m_alphas[k].setZero();
 			m_result = 0;
+			m_sum_alpha_ni = 0;
 		}
 	};
 }
