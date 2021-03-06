@@ -9,7 +9,7 @@ namespace MIS
 		CutOff = 8,
 		Maximum = 16,
 		Direct = -1,
-		//Progressive = -2,
+		Progressive = -2,
 	};
 
 	__forceinline bool iseOptimal(Heuristic h)

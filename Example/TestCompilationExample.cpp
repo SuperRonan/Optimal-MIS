@@ -9,7 +9,11 @@
 
 const std::vector<MIS::Heuristic> heuristics = { MIS::Heuristic::Balance,
         MIS::Heuristic::CutOff, MIS::Heuristic::Maximum, MIS::Heuristic::Power,
-        MIS::Heuristic::Naive, MIS::Heuristic::Direct };
+        MIS::Heuristic::Naive, MIS::Heuristic::Direct, MIS::Heuristic::Progressive };
+
+const std::vector<MIS::Heuristic> image_heuristics = { MIS::Heuristic::Balance,
+        MIS::Heuristic::CutOff, MIS::Heuristic::Maximum, MIS::Heuristic::Power,
+        MIS::Heuristic::Naive, MIS::Heuristic::Direct};
 
 template <class Estimator>
 void testEstimator()
@@ -48,6 +52,7 @@ void testEstimators()
     testEstimator<MIS::CutOffEstimator<Spectrum, Float>>();
     testEstimator<MIS::MaximumEstimator<Spectrum, Float>>();
     testEstimator<MIS::DirectEstimator<Spectrum, Float>>();
+    testEstimator<MIS::ProgressiveEstimator<Spectrum, Float>>();
 }
 
 template <class Spectrum, class Float>
@@ -136,7 +141,7 @@ void testVirtualImageEstimators()
     int width = 10;
     int height = 10;
 
-    for (MIS::Heuristic h : heuristics)
+    for (MIS::Heuristic h : image_heuristics)
     {
         MIS::ImageEstimator<Spectrum, Float, true>* estimator = MIS::createImageEstimator<Spectrum, Float, true>(h, N, width, height);
         estimator->setSampleForTechnique(1, 2);
@@ -181,4 +186,5 @@ int main(int argc, char ** argv)
 
     testVirtualImageEstimators<Float, Float>();
     testVirtualImageEstimators<RGBColor, Float>();
+
 }

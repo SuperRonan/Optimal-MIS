@@ -7,6 +7,7 @@
 #include "CutOffEstimator.h"
 #include "MaximumEstimator.h"
 #include "NaiveEstimator.h"
+#include "ProgressiveEstimator.h"
 
 #include "Heuristics.h"
 
@@ -37,6 +38,9 @@ namespace MIS
 			break;
 			case Heuristic::Direct:
 				res = new DirectEstimator<Spectrum, Float>(N);
+			break;
+			case Heuristic::Progressive:
+				res = new ProgressiveEstimator<Spectrum, Float>(N);
 			break;
 			default:
 				throw std::logic_error("Heuristic not recognized! Cannot create the estimator");
