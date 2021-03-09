@@ -7,7 +7,7 @@
 
 namespace MIS
 {
-    template <class Spectrum, class Float, bool ROW_MAJOR>
+    template <class Spectrum, class Float, class Uint, bool ROW_MAJOR>
 	class ImageDirectEstimator : public ImageEstimator<Spectrum, Float, ROW_MAJOR>
 	{
 	protected:
@@ -16,7 +16,7 @@ namespace MIS
 		using MatrixT = Eigen::Matrix<solvingFloat, Eigen::Dynamic, Eigen::Dynamic>;
 		using VectorT = Eigen::Matrix<solvingFloat, Eigen::Dynamic, 1>;
 		
-		using StorageUInt = unsigned int;
+		using StorageUInt = Uint;
 		using StorageFloat = Float;
 
 		using Wrapper = SpectrumWrapper<Spectrum>;
@@ -83,9 +83,9 @@ namespace MIS
 
 #if OPTIMIS_ONE_CONTIGUOUS_ARRAY
 		// In Byte
-		const unsigned int m_pixel_data_size;
-		const unsigned int m_vector_ofsset;
-		const unsigned int m_counter_offset;
+		const Uint m_pixel_data_size;
+		const Uint m_vector_ofsset;
+		const Uint m_counter_offset;
 
 		std::vector<char> m_data;
 #else
@@ -95,7 +95,7 @@ namespace MIS
 #endif
 
 		//describes how many times more samples each technique has
-		std::vector<unsigned int> m_sample_per_technique;
+		std::vector<Uint> m_sample_per_technique;
 
 		std::mutex m_mutex;
 
@@ -109,7 +109,7 @@ namespace MIS
 			m_vector_ofsset(msize * sizeof(StorageFloat)),
 			m_counter_offset(msize * sizeof(StorageFloat) + spectrumDim() * m_numtechs * sizeof(StorageFloat)),
 			m_data(std::vector<char>(width* height* m_pixel_data_size, (char)0)),
-			m_sample_per_technique(std::vector<unsigned int>(m_numtechs, 1))
+			m_sample_per_technique(std::vector<Uint>(m_numtechs, 1))
 		{}
 
 		ImageDirectEstimator(ImageDirectEstimator const& other) :
@@ -135,7 +135,7 @@ namespace MIS
 		ImageDirectEstimator(int N, int width, int height) :
 			ImageEstimator(N, width, height, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
-			m_sample_per_technique(std::vector<unsigned int>(m_numtechs, 1))
+			m_sample_per_technique(std::vector<Uint>(m_numtechs, 1))
 		{
 			int res = width * height;
 			m_matrices = std::vector<StorageFloat>(res * msize, (StorageFloat)0.0);
@@ -247,8 +247,8 @@ namespace MIS
 				}
 				matrix(i, i) = data.techMatrix[matTo1D(i, i)];
 				// Unsampled samples
-				size_t expected = m_sample_per_technique[i] * iterations;
-				size_t actually = data.sampleCount[i];
+				Uint expected = m_sample_per_technique[i] * (Uint)iterations;
+				Uint actually = data.sampleCount[i];
 				matrix(i, i) += (Float)(expected - actually);
 			}
 		}

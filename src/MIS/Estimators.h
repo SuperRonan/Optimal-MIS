@@ -15,7 +15,7 @@
 
 namespace MIS
 {
-	template <class Spectrum, class Float>
+	template <class Spectrum, class Float, class Uint=size_t>
 	Estimator<Spectrum, Float>* createEstimator(Heuristic h, int N)
 	{
 		Estimator<Spectrum, Float>* res = nullptr;
@@ -37,10 +37,10 @@ namespace MIS
 				res = new MaximumEstimator<Spectrum, Float>(N);
 			break;
 			case Heuristic::Direct:
-				res = new DirectEstimator<Spectrum, Float>(N);
+				res = new DirectEstimator<Spectrum, Float, Uint>(N);
 			break;
 			case Heuristic::Progressive:
-				res = new ProgressiveEstimator<Spectrum, Float>(N);
+				res = new ProgressiveEstimator<Spectrum, Float, Uint>(N);
 			break;
 			default:
 				throw std::logic_error("Heuristic not recognized! Cannot create the estimator");

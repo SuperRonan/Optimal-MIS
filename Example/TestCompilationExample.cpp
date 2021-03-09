@@ -127,7 +127,7 @@ template <class Spectrum, class Float = double>
 void testImageEstimators()
 {
     testImageEstimator<MIS::ImageBalanceEstimator<Spectrum, Float, true>>();
-    testImageEstimator<MIS::ImageDirectEstimator<Spectrum, Float, true>>();
+    testImageEstimator<MIS::ImageDirectEstimator<Spectrum, Float, size_t, true>>();
     testImageEstimator<MIS::ImagePowerEstimator<Spectrum, Float, true>>();
     testImageEstimator<MIS::ImageNaiveEstimator<Spectrum, Float, true>>();
     testImageEstimator<MIS::ImageCutOffEstimator<Spectrum, Float, true>>();

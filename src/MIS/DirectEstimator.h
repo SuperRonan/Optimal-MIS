@@ -5,13 +5,13 @@
 #include "utils/SpectrumWrapper.h"
 namespace MIS
 {
-	template <class Spectrum, class Float = double>
+	template <class Spectrum, class Float = double, class Uint = size_t>
 	class DirectEstimator : public Estimator<Spectrum, Float>
 	{
 	protected:
 		using StorageFloat = Float;
 		using SolvingFloat = Float;
-		using StorageUInt = unsigned int;
+		using StorageUInt = Uint;
 
 		using MatrixT = Eigen::Matrix<SolvingFloat, Eigen::Dynamic, Eigen::Dynamic>;
 		using VectorT = Eigen::Matrix<SolvingFloat, Eigen::Dynamic, 1>;
@@ -38,7 +38,7 @@ namespace MIS
 		StorageFloat* m_vectors_data;
 		StorageUInt* m_sample_count;
 
-		std::vector<unsigned int> m_sample_per_technique;
+		std::vector<Uint> m_sample_per_technique;
 
         // Pre allocation for the solving step
 		MatrixT m_matrix;
@@ -157,8 +157,8 @@ namespace MIS
 				Float elem = m_matrix_data[mat_id];
 				assert(elem >= 0);
 				if (std::isnan(elem) || std::isinf(elem))	elem = 0;
-				size_t expected = m_sample_per_technique[i] * (size_t)iterations;
-				size_t actually = m_sample_count[i];
+				Uint expected = m_sample_per_technique[i] * (Uint)iterations;
+				Uint actually = m_sample_count[i];
 				m_matrix(i, i) = elem + (Float)(expected - actually); // Unsampled samples
 			}
 		}

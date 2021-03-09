@@ -14,7 +14,7 @@
 
 namespace MIS
 {
-	template <class Spectrum, class Float, bool ROW_MAJOR>
+	template <class Spectrum, class Float, bool ROW_MAJOR, class Uint = size_t>
 	ImageEstimator<Spectrum, Float, ROW_MAJOR>* createImageEstimator(Heuristic h, int N, int width, int height)
 	{
 		ImageEstimator<Spectrum, Float, ROW_MAJOR>* res = nullptr;
@@ -36,7 +36,7 @@ namespace MIS
 			res = new ImageMaximumEstimator<Spectrum, Float, ROW_MAJOR>(N, width, height);
 			break;
 		case Heuristic::Direct:
-			res = new ImageDirectEstimator<Spectrum, Float, ROW_MAJOR>(N, width, height);
+			res = new ImageDirectEstimator<Spectrum, Float, Uint, ROW_MAJOR>(N, width, height);
 			break;
 		default:
 			throw std::logic_error("Heuristic not recognized! Cannot create the estimator");
