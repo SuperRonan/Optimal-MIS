@@ -200,5 +200,32 @@ namespace MIS
 		{
 			std::fill(m_data.begin(), m_data.end(), 0);
 		}
-    };
+
+
+		struct LinearSystem
+		{
+			MatrixT tech_matrix;
+			VectorT contrib_vector, alpha;
+		};
+
+		LinearSystem getLinearSystem(int iterations, int channel=0)
+		{
+			LinearSystem res;
+			int k = channel;
+			const StorageFloat* cvector = m_vectors_data + k * m_numtechs;
+			for (int i = 0; i < m_numtechs; ++i)
+			{
+				Float elem = cvector[i];
+				if (std::isnan(elem) || std::isinf(elem))	elem = 0;
+				m_vector[i] = elem;
+			}
+			fillMatrix(iterations);
+			m_solver = m_matrix.colPivHouseholderQr();
+			res.alpha = m_solver.solve(m_vector);
+			res.tech_matrix = m_matrix;
+			res.contrib_vector = m_vector;
+
+			return res;
+		}
+	};
 }

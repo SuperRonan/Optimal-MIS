@@ -17,7 +17,7 @@ namespace MIS
         /// <summary>
         /// The result of the estimator is accumulated in this variable.
         /// </summary>
-        Spectrum m_result;
+        Spectrum m_result = 0;
 
     public:
 
