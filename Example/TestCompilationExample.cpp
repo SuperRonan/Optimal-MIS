@@ -174,7 +174,7 @@ void testVirtualImageEstimators()
 }
 
 template <class Float, class Estimator>
-void testConservativeHypothesis(bool verbose=false)
+void testConservativeHypothesis(bool conservative, bool use_pdf=false, bool verbose=false)
 {
 	struct Sampler
 	{
@@ -224,17 +224,17 @@ void testConservativeHypothesis(bool verbose=false)
 	};
 
 	std::vector<std::shared_ptr<Tech>> techs = {
-		//std::make_shared<UniTech>(1, 0, 3),
-		std::make_shared<UniTech>(1, 0, 2),
-		std::make_shared<UniTech>(1, 1, 3),
-		//std::make_shared<UniTech>(1, 1, 2),
-		//std::make_shared<UniTech>(1, 1.25, 1.75),
+		std::make_shared<UniTech>(1, 0, 3), // Worst
+		std::make_shared<UniTech>(1, 0, 2), // half bad
+		std::make_shared<UniTech>(1, 1, 3), // half bad
+		std::make_shared<UniTech>(1, 1, 2), // good 
+		//std::make_shared<UniTech>(1, 1.25, 1.75), // optimal
 	};
 
 	std::vector<Float> Wb(techs.size());
 	
 	
-	size_t iterations = 64*64;
+	size_t iterations = 64;
 
 	const auto f = [](Float x) {
 		if (x > 1.25 && x < 1.75)	return Float(2);
@@ -249,7 +249,7 @@ void testConservativeHypothesis(bool verbose=false)
 	std::cout << "Ground Truth: " << F << std::endl;
 	Sampler sampler;
 	Float avg_error = 0, avg_abs_error=0;
-	int L = 16*16;
+	int L = 16*16*16;
 	for (int n = 0; n < L; ++n)
 	{
 		estimator.reset();
@@ -264,9 +264,11 @@ void testConservativeHypothesis(bool verbose=false)
 					Sample s = ti.sample(sampler);
 					Float fx = f(s.x) / (ti.n * s.p);
 					Float sum = 0;
+					if (fx == 0 && conservative)
+						continue;
 					for (int l = 0; l < techs.size(); ++l)
 					{
-						Float ql = techs[l]->pdf(s.x) * techs[l]->n;
+						Float ql = techs[l]->pdf(s.x) * (use_pdf ? 1 : techs[l]->n);
 						sum += ql;
 						Wb[l] = ql;
 					}
@@ -290,6 +292,7 @@ void testConservativeHypothesis(bool verbose=false)
 			{
 				MIS::DirectEstimator<Float, Float>& d = estimator;
 				MIS::DirectEstimator<Float, Float>::LinearSystem system = d.getLinearSystem(iterations);
+				for (int i = 0; i < techs.size(); ++i)	system.alpha[i] *= techs[i]->n;
 				std::cout << "A: \n" << system.tech_matrix / iterations << std::endl;
 				std::cout << "b: \n" << system.contrib_vector / iterations << std::endl;
 				std::cout << "a: \n" << system.alpha << std::endl;
@@ -319,7 +322,11 @@ int main(int argc, char ** argv)
 
 
 	std::cout << "Balance estimator: " << std::endl;
-	testConservativeHypothesis<Float, MIS::BalanceEstimator<Float, Float>>();
+	testConservativeHypothesis<Float, MIS::BalanceEstimator<Float, Float>>(false);
 	std::cout << "Direct  estimator: " << std::endl;
-	testConservativeHypothesis<Float, MIS::DirectEstimator<Float, Float>>();
+	testConservativeHypothesis<Float, MIS::DirectEstimator<Float, Float>>(true, false);
+	//std::cout << "PDF instead of effective PDFs (Not expected to work)" << std::endl;
+	//testConservativeHypothesis<Float, MIS::DirectEstimator<Float, Float>>(true, true);
+	std::cout << "Non-Conservative Hypothesis: " << std::endl;
+	testConservativeHypothesis<Float, MIS::DirectEstimator<Float, Float>>(false, false);
 }
