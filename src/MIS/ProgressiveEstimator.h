@@ -265,6 +265,7 @@ namespace MIS
 			for (int k = 0; k < Wrapper::size(); ++k)	m_alphas[k].setZero();
 			m_result = 0;
 			m_sum_alpha_ni = 0;
+			m_loop_counter = 0;
 		}
 	};
 }
