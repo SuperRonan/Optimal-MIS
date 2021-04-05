@@ -232,7 +232,7 @@ namespace MIS
 				for (int k = 0; k < Wrapper::size(); ++k)
 				{
 					VectorT& alpha = m_alphas[k];
-					bool is_zero;
+					bool is_zero = true;
 					const StorageFloat* cvector = m_vectors_data + k * m_numtechs;
 					for (int i = 0; i < m_numtechs; ++i)
 					{

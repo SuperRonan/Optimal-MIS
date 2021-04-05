@@ -228,13 +228,13 @@ void testConservativeHypothesis(bool conservative, bool use_pdf=false, bool verb
 		std::make_shared<UniTech>(1, 0, 2), // half bad
 		std::make_shared<UniTech>(1, 1, 3), // half bad
 		std::make_shared<UniTech>(1, 1, 2), // good 
-		//std::make_shared<UniTech>(1, 1.25, 1.75), // optimal
+		std::make_shared<UniTech>(1, 1.25, 1.75), // optimal
 	};
 
 	std::vector<Float> Wb(techs.size());
 	
 	
-	size_t iterations = 64;
+	size_t iterations = 64*16;
 
 	const auto f = [](Float x) {
 		if (x > 1.25 && x < 1.75)	return Float(2);
