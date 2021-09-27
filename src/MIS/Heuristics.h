@@ -20,4 +20,17 @@ namespace MIS
 
 // This can't not be inlined
 #define isOptimal(h) ((int h) < 0)
+
+	template <class Float>
+	struct EstimatorCreateInfo
+	{
+		Heuristic heuristic;
+		int N;
+		union
+		{
+			Float power_beta = 2; 
+			Float cutoff_alpha = 0.8; 
+			int progressive_step = 4;
+		};
+	};
 }
