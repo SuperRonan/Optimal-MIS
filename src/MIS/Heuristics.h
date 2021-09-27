@@ -26,11 +26,9 @@ namespace MIS
 	{
 		Heuristic heuristic;
 		int N;
-		union
-		{
-			Float power_beta = 2; 
-			Float cutoff_alpha = 0.8; 
-			int progressive_step = 4;
-		};
+		// Unfortunately, cannot use a union and default values		
+		Float power_beta = 2; 
+		Float cutoff_alpha = 0.8; 
+		int progressive_step = 4;
 	};
 }
