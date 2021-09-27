@@ -22,7 +22,7 @@ namespace MIS
     public:
 
         SimpleEstimator(int N, Heuristic h):
-            Estimator(N, h)
+            Estimator<Spectrum, Float>::Estimator(N, h)
         {}
 
         SimpleEstimator(SimpleEstimator const&) = default;

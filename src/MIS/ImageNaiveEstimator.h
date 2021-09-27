@@ -10,7 +10,7 @@ namespace MIS
 	public:
 
 		ImageNaiveEstimator(int N, int width, int height) :
-			ImageSimpleEstimator(N, width, height, Heuristic::Naive)
+			ImageSimpleEstimator<Spectrum, Float, ROW_MAJOR>::ImageSimpleEstimator(N, width, height, Heuristic::Naive)
 		{}
 
 		ImageNaiveEstimator(ImageNaiveEstimator const& other) = default;

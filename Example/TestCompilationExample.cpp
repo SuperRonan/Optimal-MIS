@@ -25,8 +25,8 @@ void testEstimator()
 	const int N = 2;
 	Estimator _estimator(N);
 	Estimator estimator = _estimator;
-	Estimator::Spectrum_Type estimate;
-	Estimator::Float_Type weights[N];
+	typename Estimator::Spectrum_Type estimate;
+	typename Estimator::Float_Type weights[N];
 
 	estimator.setSampleForTechnique(1, 2);
 
@@ -91,8 +91,8 @@ void testVirtualEstimators()
 template <class ImageEstimator>
 void testImageEstimator()
 {
-	using Float = ImageEstimator::Float_Type;
-	using Spectrum = ImageEstimator::Spectrum_Type;
+	using Float = typename ImageEstimator::Float_Type;
+	using Spectrum = typename ImageEstimator::Spectrum_Type;
 	const int N = 2;
 	int w = 10;
 	int h = 10;
@@ -291,7 +291,7 @@ void testConservativeHypothesis(bool conservative, bool use_pdf=false, bool verb
 			if constexpr (std::is_same<Estimator, MIS::DirectEstimator<Float, Float>>::value)
 			{
 				MIS::DirectEstimator<Float, Float>& d = estimator;
-				MIS::DirectEstimator<Float, Float>::LinearSystem system = d.getLinearSystem(iterations);
+				typename MIS::DirectEstimator<Float, Float>::LinearSystem system = d.getLinearSystem(iterations);
 				for (int i = 0; i < techs.size(); ++i)	system.alpha[i] *= techs[i]->n;
 				std::cout << "A: \n" << system.tech_matrix / iterations << std::endl;
 				std::cout << "b: \n" << system.contrib_vector / iterations << std::endl;

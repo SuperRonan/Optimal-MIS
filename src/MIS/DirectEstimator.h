@@ -49,7 +49,7 @@ namespace MIS
 	public:
 
 		DirectEstimator(int N) :
-			Estimator(N, Heuristic::Direct),
+			Estimator<Spectrum, Float>::Estimator(N, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
 			m_data((msize + Wrapper::size() * N) * sizeof(StorageFloat) + N * sizeof(StorageUInt), 0),
 			m_matrix_data((StorageFloat*)m_data.data()),
@@ -65,7 +65,7 @@ namespace MIS
 		}
 
 		DirectEstimator(DirectEstimator const& other):
-			Estimator(other),
+			Estimator<Spectrum, Float>::Estimator(other),
 			msize(other.msize),
 			m_data(other.m_data),
 			m_matrix_data((StorageFloat*)m_data.data()),
@@ -79,7 +79,7 @@ namespace MIS
 		{}
 
 		DirectEstimator(DirectEstimator&& other) :
-			Estimator(std::move(other)),
+			Estimator<Spectrum, Float>::Estimator(std::move(other)),
 			msize(other.msize),
 			m_data(std::move(other.m_data)),
 			m_matrix_data((StorageFloat*)m_data.data()),

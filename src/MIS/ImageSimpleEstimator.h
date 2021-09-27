@@ -28,17 +28,17 @@ namespace MIS
 	public:
 
 		ImageSimpleEstimator(int N, int width, int height, Heuristic h):
-			ImageEstimator(N, width, height, h),
+			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(N, width, height, h),
 			m_buffer(size_t(width * height), Spectrum(0))
 		{}
 
 		ImageSimpleEstimator(ImageSimpleEstimator const& other):
-			ImageEstimator(other),
+			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(other),
 			m_buffer(other.m_buffer)
 		{}
 
 		ImageSimpleEstimator(ImageSimpleEstimator&& other):
-			ImageEstimator(other),
+			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(other),
 			m_buffer(std::move(other.m_buffer))
 		{}
 
@@ -70,7 +70,7 @@ namespace MIS
 		{
 			this->loopThroughImage([&](int i, int j)
 			{
-				int id = pixelTo1D(i, j);
+				int id = this->pixelTo1D(i, j);
 				res[id] += m_buffer[id] / iterations;
 			});
 		}

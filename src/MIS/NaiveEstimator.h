@@ -15,7 +15,7 @@ namespace MIS
 	public:
 
 		NaiveEstimator(int N):
-			SimpleEstimator(N, Heuristic::Naive)
+			SimpleEstimator<Spectrum, Float>::SimpleEstimator(N, Heuristic::Naive)
 		{}
 
 		NaiveEstimator(NaiveEstimator const&) = default;

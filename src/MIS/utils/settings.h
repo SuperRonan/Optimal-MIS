@@ -7,10 +7,13 @@
 // true -> enable debug functions of the direct estimator
 #define OPTIMIS_ENABLE_DEBUG false
 
-#define MIS_forceinline inline
+
 #ifdef _MSC_VER 
 #define MIS_forceinline __forceinline
 #endif
 #ifdef __GNUG__
 #define MIS_forceinline __attribute__((always_inline))
+#endif
+#ifndef MIS_forceinline
+#define MIS_forceinline inline
 #endif

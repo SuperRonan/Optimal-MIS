@@ -103,7 +103,7 @@ namespace MIS
 
 #if OPTIMIS_ONE_CONTIGUOUS_ARRAY
 		ImageDirectEstimator(int N, int width, int height) :
-			ImageEstimator(N, width, height, Heuristic::Direct),
+			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(N, width, height, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
 			m_pixel_data_size(msize * sizeof(StorageFloat) + this->spectrumDim() * this->m_numtechs * sizeof(StorageFloat) + this->m_numtechs * sizeof(StorageUInt)),
 			m_vector_ofsset(msize * sizeof(StorageFloat)),
@@ -113,7 +113,7 @@ namespace MIS
 		{}
 
 		ImageDirectEstimator(ImageDirectEstimator const& other) :
-			ImageEstimator(other),
+			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(other),
 			msize(other.msize),
 			m_pixel_data_size(other.m_pixel_data_size),
 			m_vector_ofsset(other.m_vector_ofsset),
@@ -123,7 +123,7 @@ namespace MIS
 		{}
 
 		ImageDirectEstimator(ImageDirectEstimator && other):
-			ImageEstimator(other),
+			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(other),
 			msize(other.msize),
 			m_pixel_data_size(other.m_pixel_data_size),
 			m_vector_ofsset(other.m_vector_ofsset),
@@ -133,7 +133,7 @@ namespace MIS
 		{}
 #else
 		ImageDirectEstimator(int N, int width, int height) :
-			ImageEstimator(N, width, height, Heuristic::Direct),
+			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(N, width, height, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
 			m_sample_per_technique(std::vector<Uint>(this->m_numtechs, 1))
 		{
@@ -144,7 +144,7 @@ namespace MIS
 		}
 
 		ImageDirectEstimator(ImageDirectEstimator const& other) :
-			ImageEstimator(other),
+			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(other),
 			msize(other.msize),
 			m_matrices(other.m_matrices),
 			m_vectors(other.m_vectors),
@@ -153,7 +153,7 @@ namespace MIS
 		{}
 
 		ImageDirectEstimator(ImageDirectEstimator && other) :
-			ImageEstimator(other),
+			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(other),
 			msize(other.msize),
 			m_matrices(std::move(other.m_matrices)),
 			m_vectors(std::move(other.m_vectors)),
@@ -198,7 +198,7 @@ namespace MIS
 			}
 			if (!balance_estimate.isZero())
 			{
-				for (int k = 0; k < spectrumDim(); ++k)
+				for (int k = 0; k < this->spectrumDim(); ++k)
 				{
 					StorageFloat* vector = data.contribVector + k * this->m_numtechs;
 					for (int i = 0; i < this->m_numtechs; ++i)
@@ -221,7 +221,7 @@ namespace MIS
 				m_mutex.lock();
 			++data.sampleCount[tech_index];
 			data.techMatrix[mat_index] += 1.0;
-			for (int k = 0; k < spectrumDim(); ++k)
+			for (int k = 0; k < this->spectrumDim(); ++k)
 			{
 				StorageFloat* vector = data.contribVector + k * this->m_numtechs;
 				vector[tech_index] += _estimate[k];

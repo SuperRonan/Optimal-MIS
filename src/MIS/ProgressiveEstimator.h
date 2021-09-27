@@ -63,7 +63,7 @@ namespace MIS
 	public:
 
 		ProgressiveEstimator(int N, int U=4) :
-			Estimator(N, Heuristic::Progressive),
+			Estimator<Spectrum, Float>::Estimator(N, Heuristic::Progressive),
 			msize(N* (N + 1) / 2),
 			U(U),
 			m_loop_counter(0),
@@ -85,7 +85,7 @@ namespace MIS
 		}
 
 		ProgressiveEstimator(ProgressiveEstimator const& other) :
-			Estimator(other),
+			Estimator<Spectrum, Float>::Estimator(other),
 			msize(other.msize),
 			U(other.U),
 			m_loop_counter(other.m_loop_counter),
@@ -105,7 +105,7 @@ namespace MIS
 		}
 
 		ProgressiveEstimator(ProgressiveEstimator&& other) :
-			Estimator(std::move(other)),
+			Estimator<Spectrum, Float>::Estimator(std::move(other)),
 			msize(other.msize),
 			U(other.U),
 			m_loop_counter(other.m_loop_counter),
@@ -121,7 +121,7 @@ namespace MIS
 			m_MVector(std::move(other.m_MVector)),
 			m_sum_alpha_ni(std::move(other.m_sum_alpha_ni))
 		{
-			for (int i = 0; i < Wrapper::size(); ++i)	m_alpha[i] = std::move(other.m_alpha[i]);
+			for (int k = 0; k < Wrapper::size(); ++k)	m_alphas[k] = std::move(other.m_alphas[k]);
 		}
 
 		virtual void setSampleForTechnique(int tech_index, int n)override

@@ -56,7 +56,7 @@ namespace MIS
 		/// Pre allocate a vector of T the size of the wished number of threads
 		/// </summary>
 		template <class T>
-		__forceinline static std::vector<T> preAllocate(T const& t=T())
+		MIS_forceinline static std::vector<T> preAllocate(T const& t=T())
 		{
 			return std::vector<T>(getNumThreads(), t);
 		}

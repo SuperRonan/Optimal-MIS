@@ -16,7 +16,7 @@ namespace MIS
 	public:
 
 		MaximumEstimator(int N):
-			SimpleEstimator(N, Heuristic::Maximum)
+			SimpleEstimator<Spectrum, Float>::SimpleEstimator(N, Heuristic::Maximum)
 		{}
 
 		MaximumEstimator(MaximumEstimator const&) = default;
