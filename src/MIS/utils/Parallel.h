@@ -2,13 +2,9 @@
 
 #include <omp.h>
 #include <vector>
+#include "settings.h"
 
-#ifndef _MSC_VER 
-#define __forceinline inline
-#endif
-#ifdef __GNUG__
-#define __forceinline __attribute__((always_inline))
-#endif
+
 
 namespace MIS
 {
@@ -80,7 +76,7 @@ namespace MIS
 		/// <param name="max">: excluded</param>
 		/// <param name="function">: A function taking an int between min and max</param>
 		template <class Function>
-		__forceinline static void parallelFor(int min, int max, Function const& function)
+		MIS_forceinline static void parallelFor(int min, int max, Function const& function)
 		{
 	#pragma omp parallel for schedule(dynamic)
 				for (int i = min; i < max; ++i)

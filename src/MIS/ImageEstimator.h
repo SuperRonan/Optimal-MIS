@@ -62,7 +62,7 @@ namespace MIS
 		}
 		
 		template <class Function>
-		__forceinline void loopThroughImage(const Function& function)const
+		MIS_forceinline void loopThroughImage(const Function& function)const
 		{
 			if constexpr (ROW_MAJOR)
 			{

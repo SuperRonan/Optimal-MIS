@@ -24,7 +24,7 @@ namespace MIS
 
 		const int msize;
 
-		__forceinline int matTo1D(int row, int col) const {
+		MIS_forceinline int matTo1D(int row, int col) const {
 			// return row * numTechs + col;
 			if (col > row) std::swap(row, col);
 			return (row * (row + 1)) / 2 + col;
