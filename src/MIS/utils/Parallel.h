@@ -3,6 +3,13 @@
 #include <omp.h>
 #include <vector>
 
+#ifndef _MSC_VER 
+#define __forceinline inline
+#endif
+#ifdef __GNUG__
+#define __forceinline __attribute__((always_inline))
+#endif
+
 namespace MIS
 {
 	/// <summary>

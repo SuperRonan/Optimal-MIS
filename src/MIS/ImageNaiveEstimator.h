@@ -20,7 +20,7 @@ namespace MIS
 		virtual Float weight(const Float* balance_weights, int tech_index) const override
 		{
 			int non_zero_techs = 0;
-			for (int i = 0; i < m_numtechs; ++i)
+			for (int i = 0; i < this->m_numtechs; ++i)
 				if (balance_weights[i] > 0)
 					++non_zero_techs;
 			return Float(1.0) / Float(non_zero_techs);

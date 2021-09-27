@@ -11,6 +11,9 @@ namespace MISExample
     {
     protected:
 
+#ifdef me
+#define MIS_me_defined me
+#endif
 #define me (*this)
 
         Float m_data[N];
@@ -155,6 +158,9 @@ namespace MISExample
         }
         
 #undef me
+#ifdef MIS_me_defined
+#define me MIS_me_defined
+#endif
     };
 }
 

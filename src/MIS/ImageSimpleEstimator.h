@@ -16,9 +16,9 @@ namespace MIS
 
 		Spectrum& pixel(Float u, Float v)
 		{
-			int i = int(u * m_width);
-			int j = int(v * m_height);
-			int id = pixelTo1D(i, j);
+			int i = int(u * this->m_width);
+			int j = int(v * this->m_height);
+			int id = this->pixelTo1D(i, j);
 			Spectrum& p = m_buffer[id];
 			return p;
 		}
@@ -68,7 +68,7 @@ namespace MIS
 
 		virtual void solve(Spectrum* res, int iterations)override
 		{
-			loopThroughImage([&](int i, int j)
+			this->loopThroughImage([&](int i, int j)
 			{
 				int id = pixelTo1D(i, j);
 				res[id] += m_buffer[id] / iterations;

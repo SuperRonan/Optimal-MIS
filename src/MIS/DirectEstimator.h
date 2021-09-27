@@ -70,7 +70,7 @@ namespace MIS
 			m_data(other.m_data),
 			m_matrix_data((StorageFloat*)m_data.data()),
 			m_vectors_data(((StorageFloat*)m_data.data()) + msize),
-			m_sample_count((StorageUInt*)(m_data.data() + ((msize + Wrapper::size() * m_numtechs) * sizeof(StorageFloat)))),
+			m_sample_count((StorageUInt*)(m_data.data() + ((msize + Wrapper::size() * this->m_numtechs) * sizeof(StorageFloat)))),
 			m_sample_per_technique(other.m_sample_per_technique),
 			m_matrix(other.m_matrix),
 			m_vector(other.m_vector),
@@ -84,7 +84,7 @@ namespace MIS
 			m_data(std::move(other.m_data)),
 			m_matrix_data((StorageFloat*)m_data.data()),
 			m_vectors_data(((StorageFloat*)m_data.data()) + msize),
-			m_sample_count((StorageUInt*)(m_data.data() + ((msize + Wrapper::size() * m_numtechs) * sizeof(StorageFloat)))),
+			m_sample_count((StorageUInt*)(m_data.data() + ((msize + Wrapper::size() * this->m_numtechs) * sizeof(StorageFloat)))),
 			m_sample_per_technique(std::move(other.m_sample_per_technique)),
 			m_matrix(std::move(other.m_matrix)),
 			m_vector(std::move(other.m_vector)),
@@ -105,7 +105,7 @@ namespace MIS
 			const Spectrum _balance_estimate = estimate * balance_weights[tech_index];
 			const CWrapper balance_estimate = _balance_estimate;
 			++m_sample_count[tech_index];
-			for (int i = 0; i < m_numtechs; ++i)
+			for (int i = 0; i < this->m_numtechs; ++i)
 			{
 				for (int j = 0; j <= i; ++j) // Exploit the symmetry of the matrix
 				{
@@ -118,8 +118,8 @@ namespace MIS
 			{
 				for (int k = 0; k < Wrapper::size(); ++k)
 				{
-					StorageFloat* vector = m_vectors_data + m_numtechs * k;
-					for (int i = 0; i < m_numtechs; ++i)
+					StorageFloat* vector = m_vectors_data + this->m_numtechs * k;
+					for (int i = 0; i < this->m_numtechs; ++i)
 					{
 						Float tmp = balance_estimate[k] * balance_weights[i];
 						vector[i] += tmp;
@@ -136,13 +136,13 @@ namespace MIS
 			m_matrix_data[mat_index] += 1.0; // this is not really necessary, it could be done implicitely during the solving function, but it is cleaner.
 			for (int k = 0; k < Wrapper::size(); ++k)
 			{
-				(m_vectors_data + m_numtechs * k)[tech_index] += _estimate[k];
+				(m_vectors_data + this->m_numtechs * k)[tech_index] += _estimate[k];
 			}
 		}
 
 		inline void fillMatrix(int iterations)
 		{
-			for (int i = 0; i < m_numtechs; ++i)
+			for (int i = 0; i < this->m_numtechs; ++i)
 			{
 				for (int j = 0; j < i; ++j)
 				{
@@ -171,8 +171,8 @@ namespace MIS
 			for (int k = 0; k < Wrapper::size(); ++k)
 			{
 				bool is_zero = true;
-				const StorageFloat* cvector = m_vectors_data + k * m_numtechs;
-				for (int i = 0; i < m_numtechs; ++i)
+				const StorageFloat* cvector = m_vectors_data + k * this->m_numtechs;
+				for (int i = 0; i < this->m_numtechs; ++i)
 				{
 					Float elem = cvector[i];
 					if (std::isnan(elem) || std::isinf(elem))	elem = 0;
@@ -212,8 +212,8 @@ namespace MIS
 		{
 			LinearSystem res;
 			int k = channel;
-			const StorageFloat* cvector = m_vectors_data + k * m_numtechs;
-			for (int i = 0; i < m_numtechs; ++i)
+			const StorageFloat* cvector = m_vectors_data + k * this->m_numtechs;
+			for (int i = 0; i < this->m_numtechs; ++i)
 			{
 				Float elem = cvector[i];
 				if (std::isnan(elem) || std::isinf(elem))	elem = 0;

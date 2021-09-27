@@ -32,10 +32,10 @@ namespace MIS
 		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
 		{
 			Float sum = 0;
-			for (int i = 0; i < m_numtechs; ++i)
+			for (int i = 0; i < this->m_numtechs; ++i)
 				sum += std::pow(balance_weights[i], m_beta);
 			Float power_weight = std::pow(balance_weights[tech_index], m_beta) / sum;
-			m_result += estimate * power_weight;
+			this->m_result += estimate * power_weight;
 		}
 	};
 }

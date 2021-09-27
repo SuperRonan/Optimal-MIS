@@ -69,13 +69,13 @@ namespace MIS
 
 		PixelData getPixelData(Float u, Float v)const
 		{
-			const int index = pixelTo1D(u, v);
+			const int index = this->pixelTo1D(u, v);
 			return getPixelData(index);
 		}
 
 		PixelData getPixelData(int i, int j)const
 		{
-			const int index = pixelTo1D(i, j);
+			const int index = this->pixelTo1D(i, j);
 			return getPixelData(index);
 		}
 
@@ -105,11 +105,11 @@ namespace MIS
 		ImageDirectEstimator(int N, int width, int height) :
 			ImageEstimator(N, width, height, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
-			m_pixel_data_size(msize * sizeof(StorageFloat) + spectrumDim() * m_numtechs * sizeof(StorageFloat) + m_numtechs * sizeof(StorageUInt)),
+			m_pixel_data_size(msize * sizeof(StorageFloat) + this->spectrumDim() * this->m_numtechs * sizeof(StorageFloat) + this->m_numtechs * sizeof(StorageUInt)),
 			m_vector_ofsset(msize * sizeof(StorageFloat)),
-			m_counter_offset(msize * sizeof(StorageFloat) + spectrumDim() * m_numtechs * sizeof(StorageFloat)),
+			m_counter_offset(msize * sizeof(StorageFloat) + this->spectrumDim() * this->m_numtechs * sizeof(StorageFloat)),
 			m_data(std::vector<char>(width* height* m_pixel_data_size, (char)0)),
-			m_sample_per_technique(std::vector<Uint>(m_numtechs, 1))
+			m_sample_per_technique(std::vector<Uint>(this->m_numtechs, 1))
 		{}
 
 		ImageDirectEstimator(ImageDirectEstimator const& other) :
@@ -135,12 +135,12 @@ namespace MIS
 		ImageDirectEstimator(int N, int width, int height) :
 			ImageEstimator(N, width, height, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
-			m_sample_per_technique(std::vector<Uint>(m_numtechs, 1))
+			m_sample_per_technique(std::vector<Uint>(this->m_numtechs, 1))
 		{
 			int res = width * height;
 			m_matrices = std::vector<StorageFloat>(res * msize, (StorageFloat)0.0);
-			m_vectors = std::vector<StorageFloat>(res * m_numtechs * spectrumDim(), (StorageFloat)0.0);
-			m_sampleCounts = std::vector<StorageUInt>(res * m_numtechs, (StorageUInt)0);
+			m_vectors = std::vector<StorageFloat>(res * this->m_numtechs * this->spectrumDim(), (StorageFloat)0.0);
+			m_sampleCounts = std::vector<StorageUInt>(res * this->m_numtechs, (StorageUInt)0);
 		}
 
 		ImageDirectEstimator(ImageDirectEstimator const& other) :
@@ -169,13 +169,12 @@ namespace MIS
 
 		void checkSample(Spectrum const& balance_estimate, Float* balance_weights, int tech_index)
 		{
-			for (int i = 0; i < m_numtechs; ++i)
+			for (int i = 0; i < this->m_numtechs; ++i)
 			{
 				Float weight = balance_weights[i];
 				if (weight < 0 || std::isnan(weight) || std::isinf(weight))
 				{
 					std::cout << weight << std::endl;
-					__debugbreak();
 				}
 			}
 		}
@@ -188,7 +187,7 @@ namespace MIS
 			if (thread_safe_update)
 				m_mutex.lock();
 			++data.sampleCount[tech_index];
-			for (int i = 0; i < m_numtechs; ++i)
+			for (int i = 0; i < this->m_numtechs; ++i)
 			{
 				for (int j = 0; j <= i; ++j)
 				{
@@ -201,8 +200,8 @@ namespace MIS
 			{
 				for (int k = 0; k < spectrumDim(); ++k)
 				{
-					StorageFloat* vector = data.contribVector + k * m_numtechs;
-					for (int i = 0; i < m_numtechs; ++i)
+					StorageFloat* vector = data.contribVector + k * this->m_numtechs;
+					for (int i = 0; i < this->m_numtechs; ++i)
 					{
 						Float tmp = balance_weights[i] * balance_estimate[k];
 						vector[i] += tmp;
@@ -224,7 +223,7 @@ namespace MIS
 			data.techMatrix[mat_index] += 1.0;
 			for (int k = 0; k < spectrumDim(); ++k)
 			{
-				StorageFloat* vector = data.contribVector + k * m_numtechs;
+				StorageFloat* vector = data.contribVector + k * this->m_numtechs;
 				vector[tech_index] += _estimate[k];
 			}
 			if (thread_safe_update)
@@ -236,7 +235,7 @@ namespace MIS
 
 		inline void fillMatrix(MatrixT& matrix, PixelData const& data, int iterations)const
 		{
-			for (int i = 0; i < m_numtechs; ++i)
+			for (int i = 0; i < this->m_numtechs; ++i)
 			{
 				for (int j = 0; j < i; ++j)
 				{
@@ -273,13 +272,13 @@ namespace MIS
 		virtual void solve(Spectrum * res, int iterations) override
 		{
 			using Solver = Eigen::ColPivHouseholderQR<MatrixT>;
-			VectorT MVector(m_numtechs);
-			for (int i = 0; i < m_numtechs; ++i)	MVector(i) = m_sample_per_technique[i];
-			std::vector<MatrixT> matrices = Parallel::preAllocate(MatrixT(m_numtechs, m_numtechs));
-			std::vector<VectorT> vectors = Parallel::preAllocate(VectorT(m_numtechs));
-			std::vector<Solver> solvers = Parallel::preAllocate(Solver(m_numtechs, m_numtechs));
-			int resolution = m_width * m_height;
-			loopThroughImage([&](int i, int j)
+			VectorT MVector(this->m_numtechs);
+			for (int i = 0; i < this->m_numtechs; ++i)	MVector(i) = m_sample_per_technique[i];
+			std::vector<MatrixT> matrices = Parallel::preAllocate(MatrixT(this->m_numtechs, this->m_numtechs));
+			std::vector<VectorT> vectors = Parallel::preAllocate(VectorT(this->m_numtechs));
+			std::vector<Solver> solvers = Parallel::preAllocate(Solver(this->m_numtechs, this->m_numtechs));
+			int resolution = this->m_width * this->m_height;
+			this->loopThroughImage([&](int i, int j)
 				{
 					int tid = Parallel::tid();
 					MatrixT& matrix = matrices[tid];
@@ -289,16 +288,16 @@ namespace MIS
 					Spectrum _color = 0;
 					Wrapper color = _color;
 
-					int pixel_id = pixelTo1D(i, j);
+					int pixel_id = this->pixelTo1D(i, j);
 					PixelData data = getPixelData(pixel_id);
 
 					bool matrix_done = false;
 
-					for (int k = 0; k < spectrumDim(); ++k)
+					for (int k = 0; k < this->spectrumDim(); ++k)
 					{
 						bool isZero = true;
-						const StorageFloat* contribVector = data.contribVector + k * m_numtechs;
-						for (int i = 0; i < m_numtechs; ++i)
+						const StorageFloat* contribVector = data.contribVector + k * this->m_numtechs;
+						for (int i = 0; i < this->m_numtechs; ++i)
 						{
 							Float elem = contribVector[i];
 							if (std::isnan(elem) || std::isinf(elem))	elem = 0;

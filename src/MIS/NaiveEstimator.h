@@ -22,14 +22,15 @@ namespace MIS
 
 		NaiveEstimator(NaiveEstimator &&) = default;
 
-		virtual void addEstimate(Spectrum const& estimate, const Float* balance_weights, int tech_index) override
+		virtual Float weight(const Float* balance_weights, int tech_index) const override
 		{
 			int non_zero_techs = 0;
-			for (int i = 0; i < m_numtechs; ++i)
+			for (int i = 0; i < this->m_numtechs; ++i)
 				if (balance_weights[i] > 0)
 					++non_zero_techs;
+			assert(non_zero_techs != 0); 
 			Float weight = Float(1.0) / Float(non_zero_techs);
-			m_result += estimate * weight;
+			return weight;
 		}
 
 	};

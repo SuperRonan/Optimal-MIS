@@ -26,7 +26,7 @@ namespace MIS
 		{
 			int best_index = 0;
 			Float max_w = balance_weights[0];
-			for (int i = 1; i < m_numtechs; ++i)
+			for (int i = 1; i < this->m_numtechs; ++i)
 				if (balance_weights[i] > max_w)
 				{
 					best_index = i;
@@ -35,7 +35,7 @@ namespace MIS
 			if (balance_weights[tech_index] >= m_alpha * max_w)
 			{
 				Float sum = 0;
-				for (int i = 0; i < m_numtechs; ++i)
+				for (int i = 0; i < this->m_numtechs; ++i)
 					if (balance_weights[i] >= m_alpha * max_w)
 						sum += balance_weights[i];
 				return balance_weights[tech_index] / sum;

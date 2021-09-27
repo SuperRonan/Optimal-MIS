@@ -12,8 +12,12 @@ namespace MIS
 		Progressive = -2,
 	};
 
-	__forceinline bool iseOptimal(Heuristic h)
-	{
-		return (int)h < 0;
-	}
+// This can still be inlined
+	//inline bool isOptimal(Heuristic h)
+	//{
+	//	return (int)h < 0;
+	//}
+
+// This can't not be inlined
+#define isOptimal(h) ((int h) < 0)
 }
