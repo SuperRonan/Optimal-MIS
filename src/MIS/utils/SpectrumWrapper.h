@@ -53,7 +53,7 @@ namespace MIS
 				return m_data[i];
 		}
 
-		auto const& operator[](int i)const
+		auto operator[](int i)const
 		{
 			if constexpr (isUnique())
 			{
