@@ -4,8 +4,7 @@ Practical implementation of Optimal MIS for Light Transport.
 This repository provides a C++ header only library of Practical Optimal Multiple Importance Sampling, as presented in the 
 [TODO: Practical Optimal MIS technical report](https://github.com/SuperRonan/Optimal-MIS), based on the original 
 [Optimal MIS paper](https://cgg.mff.cuni.cz/~jaroslav/papers/2019-optimal-mis/).
-We also made a (https://github.com/SuperRonan/PBRT-Optimal-MIS) using this library for an example in a renderer. 
-
+We also implemented a path tracer and bidirectional path tracer in PBRT (https://github.com/SuperRonan/PBRT-Optimal-MIS) using this library. 
 
 The library provides two abstract classes, `Estimator` (in `src/MIS/Estimator.h`) and `ImageEstimator` (in `src/MIS/ImageEstimator.h`).
 `Estimator` is entended to be used by algorithms computing one pixel at once (like a path tracer), whereas `ImageEstimator` 
