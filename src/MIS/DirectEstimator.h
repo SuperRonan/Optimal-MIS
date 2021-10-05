@@ -1,8 +1,9 @@
 #pragma once
 #include <vector>
 #include "Estimator.h"
-#include <Eigen/Dense>
+#include "DirectCommons.h"
 #include "utils/SpectrumWrapper.h"
+
 namespace MIS
 {
 	template <class Spectrum, class Float = double, class Uint = size_t>
@@ -41,10 +42,10 @@ namespace MIS
 		std::vector<Uint> m_sample_per_technique;
 
         // Pre allocation for the solving step
-		MatrixT m_matrix;
-		VectorT m_vector;
-		SolverT m_solver;
-		VectorT m_MVector;
+		mutable MatrixT m_matrix;
+		mutable VectorT m_vector;
+		mutable SolverT m_solver;
+		mutable VectorT m_MVector;
 
 	public:
 
@@ -140,7 +141,7 @@ namespace MIS
 			}
 		}
 
-		inline void fillMatrix(int iterations)
+		inline void fillMatrix(int iterations) const
 		{
 			for (int i = 0; i < this->m_numtechs; ++i)
 			{
@@ -201,29 +202,29 @@ namespace MIS
 			std::fill(m_data.begin(), m_data.end(), 0);
 		}
 
-
-		struct LinearSystem
+		LinearSystem<Float> getLinearSystem(int iterations) 
 		{
-			MatrixT tech_matrix;
-			VectorT contrib_vector, alpha;
-		};
-
-		LinearSystem getLinearSystem(int iterations, int channel=0)
-		{
-			LinearSystem res;
-			int k = channel;
-			const StorageFloat* cvector = m_vectors_data + k * this->m_numtechs;
-			for (int i = 0; i < this->m_numtechs; ++i)
-			{
-				Float elem = cvector[i];
-				if (std::isnan(elem) || std::isinf(elem))	elem = 0;
-				m_vector[i] = elem;
-			}
+			LinearSystem<Float> res;
+			
 			fillMatrix(iterations);
 			m_solver = m_matrix.colPivHouseholderQr();
-			res.alpha = m_solver.solve(m_vector);
 			res.tech_matrix = m_matrix;
-			res.contrib_vector = m_vector;
+
+			for (int k = 0; k < CWrapper::size(); ++k)
+			{
+				const StorageFloat* cvector = m_vectors_data + k * this->m_numtechs;
+				for (int i = 0; i < this->m_numtechs; ++i)
+				{
+					Float elem = cvector[i];
+					m_vector[i] = elem;
+					res.contrib_vectors(i, k) = elem;
+				}
+				m_vector = m_solver.solve(m_vector);
+				for (int i = 0; i < this->m_numtechs; ++i)
+				{
+					res.alphas(i, k) = m_vector(i);
+				}
+			}
 
 			return res;
 		}

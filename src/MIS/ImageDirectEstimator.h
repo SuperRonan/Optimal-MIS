@@ -183,7 +183,7 @@ namespace MIS
 		{
 			const Spectrum _balance_estimate = estimate * balance_weights[tech_index];
 			const CWrapper balance_estimate = _balance_estimate;
-			PixelData data = getPixelData(u, v);
+			PixelData data = this->getPixelData(u, v);
 			if (thread_safe_update)
 				m_mutex.lock();
 			++data.sampleCount[tech_index];
@@ -215,7 +215,7 @@ namespace MIS
 		virtual void addOneTechniqueEstimate(Spectrum const& estimate, int tech_index, Float u, Float v, bool thread_safe_update = false) override
 		{
 			const CWrapper _estimate = estimate;
-			PixelData data = getPixelData(u, v);
+			PixelData data = this->getPixelData(u, v);
 			int mat_index = matTo1D(tech_index, tech_index);
 			if (thread_safe_update)
 				m_mutex.lock();
@@ -289,7 +289,7 @@ namespace MIS
 					Wrapper color = _color;
 
 					int pixel_id = this->pixelTo1D(i, j);
-					PixelData data = getPixelData(pixel_id);
+					PixelData data = this->getPixelData(pixel_id);
 
 					bool matrix_done = false;
 
@@ -321,6 +321,29 @@ namespace MIS
 					}
 					res[pixel_id] += color;
 				});
+		}
+
+		LinearSystem<Float> getPixelLinearSystem(int iterations, int x, int y)
+		{
+			using Solver = Eigen::ColPivHouseholderQR<MatrixT>;
+			LinearSystem<Float> res;
+			res.tech_matrix = MatrixT(this->m_numtechs, this->m_numtechs);
+			res.contrib_vectors = MatrixT(this->m_numtechs, this->spectrumDim());
+			res.alphas = MatrixT(this->m_numtechs, this->spectrumDim());
+			const PixelData data = this->getPixelData(this->pixelTo1D(x, y));
+			fillMatrix(res.tech_matrix, data, iterations);
+			Solver solver = res.tech_matrix.colPivHouseholderQr();
+			for (int k = 0; k < this->spectrumDim(); ++k)
+			{
+				const StorageFloat* contrib_vector = data.contribVector + k * this->m_numtechs;
+				for (int i = 0; i < this->m_numtechs; ++i)
+				{
+					Float elem = contrib_vector[i];
+					res.contrib_vectors(i, k) = elem;
+				}
+			}
+			res.alphas = solver.solve(res.contrib_vectors);
+			return res;
 		}
 	};
 }
