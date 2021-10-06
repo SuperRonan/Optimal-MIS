@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ImageEstimator.h"
-#include <Eigen/Dense>
+#include "DirectCommons.h"
 #include "utils/settings.h"
 #include "utils/SpectrumWrapper.h"
 
