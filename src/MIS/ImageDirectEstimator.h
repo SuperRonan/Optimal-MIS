@@ -7,16 +7,21 @@
 
 namespace MIS
 {
-    template <class Spectrum, class Float, class Uint, bool ROW_MAJOR>
+	/// <summary>
+	/// Integer can be signed or unsigned, it is here to precise the width of the integers to use (we recomand 64 bits)
+	/// <returns></returns>
+    template <class Spectrum, class Float, class Integer, bool ROW_MAJOR>
 	class ImageDirectEstimator : public ImageEstimator<Spectrum, Float, ROW_MAJOR>
 	{
 	protected:
-
 		using solvingFloat = Float;
 		using MatrixT = Eigen::Matrix<solvingFloat, Eigen::Dynamic, Eigen::Dynamic>;
 		using VectorT = Eigen::Matrix<solvingFloat, Eigen::Dynamic, 1>;
 		
-		using StorageUInt = Uint;
+		using SINT = typename std::make_signed<Integer>::type;
+		using UINT = typename std::make_unsigned<Integer>::type;
+
+		using StorageUInt = UINT;
 		using StorageFloat = Float;
 
 		using Wrapper = SpectrumWrapper<Spectrum>;
@@ -33,7 +38,7 @@ namespace MIS
 		struct PixelData
 		{
 			StorageFloat* techMatrix;
-			// The three channels are one after the other [RRRRRRRR GGGGGGGG BBBBBBBBB]
+			// The spectrum channels are one after the other [RRRRRRRR GGGGGGGG BBBBBBBBB]
 			StorageFloat* contribVector;
 			StorageUInt* sampleCount;
 
@@ -83,9 +88,9 @@ namespace MIS
 
 #if OPTIMIS_ONE_CONTIGUOUS_ARRAY
 		// In Byte
-		const Uint m_pixel_data_size;
-		const Uint m_vector_ofsset;
-		const Uint m_counter_offset;
+		const UINT m_pixel_data_size;
+		const UINT m_vector_ofsset;
+		const UINT m_counter_offset;
 
 		std::vector<char> m_data;
 #else
@@ -95,7 +100,7 @@ namespace MIS
 #endif
 
 		//describes how many times more samples each technique has
-		std::vector<Uint> m_sample_per_technique;
+		std::vector<UINT> m_sample_per_technique;
 
 		std::mutex m_mutex;
 
@@ -109,7 +114,7 @@ namespace MIS
 			m_vector_ofsset(msize * sizeof(StorageFloat)),
 			m_counter_offset(msize * sizeof(StorageFloat) + this->spectrumDim() * this->m_numtechs * sizeof(StorageFloat)),
 			m_data(std::vector<char>(width* height* m_pixel_data_size, (char)0)),
-			m_sample_per_technique(std::vector<Uint>(this->m_numtechs, 1))
+			m_sample_per_technique(std::vector<UINT>(this->m_numtechs, 1))
 		{}
 
 		ImageDirectEstimator(ImageDirectEstimator const& other) :
@@ -135,7 +140,7 @@ namespace MIS
 		ImageDirectEstimator(int N, int width, int height) :
 			ImageEstimator<Spectrum, Float, ROW_MAJOR>::ImageEstimator(N, width, height, Heuristic::Direct),
 			msize(N* (N + 1) / 2),
-			m_sample_per_technique(std::vector<Uint>(this->m_numtechs, 1))
+			m_sample_per_technique(std::vector<UINT>(this->m_numtechs, 1))
 		{
 			int res = width * height;
 			m_matrices = std::vector<StorageFloat>(res * msize, (StorageFloat)0.0);
@@ -244,29 +249,15 @@ namespace MIS
 					matrix(i, j) = elem;
 					matrix(j, i) = elem;
 				}
-				matrix(i, i) = data.techMatrix[matTo1D(i, i)];
+				Float mii = data.techMatrix[matTo1D(i, i)];
 				// Unsampled samples
-				Uint expected = m_sample_per_technique[i] * (Uint)iterations;
-				Uint actually = data.sampleCount[i];
-				matrix(i, i) += (Float)(expected - actually);
+				SINT expected = m_sample_per_technique[i] * (SINT)iterations;
+				SINT actually = data.sampleCount[i];
+				// Use signed int because it can happen that actually > expected (if a nearby pixel procuces a samples with coords on the edge of the limit).
+				// We could also clamp to 0 if negative
+				mii += (Float)(expected - actually);
+				matrix(i, i) = mii;
 			}
-		}
-
-
-		virtual void debug(int iterations, bool col_sum, bool matrix, bool vec, bool alpha)const override
-		{
-#if OPTIMIS_ENABLE_DEBUG
-			if (col_sum)
-				saveColSum(iterations);
-			if (matrix)
-				saveMatrices(iterations);
-			if (vec)
-				saveVectors(iterations);
-			if (alpha)
-				saveAlphas(iterations);
-#else 
-			std::cout << "Warning! Image Direct Estimator Debug disabled. Nothing happens!" << std::endl;
-#endif
 		}
 
 		virtual void solve(Spectrum * res, int iterations) override

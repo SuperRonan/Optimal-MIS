@@ -14,7 +14,10 @@
 
 namespace MIS
 {
-	template <class Spectrum, class Float, bool ROW_MAJOR, class Uint = size_t>
+	/// <summary>
+	/// Integer can be signed or unsigned, it is here to precise the width of the integers to use (we recomand 64 bits)
+	/// <returns></returns>
+	template <class Spectrum, class Float, bool ROW_MAJOR, class Integer = int64_t>
 	ImageEstimator<Spectrum, Float, ROW_MAJOR>* createImageEstimator(int width, int height, EstimatorCreateInfo<Float> const& estimator_create_info = EstimatorCreateInfo<Float>())
 	{
 		ImageEstimator<Spectrum, Float, ROW_MAJOR>* res = nullptr;
@@ -36,7 +39,7 @@ namespace MIS
 			res = new ImageMaximumEstimator<Spectrum, Float, ROW_MAJOR>(estimator_create_info.N, width, height);
 			break;
 		case Heuristic::Direct:
-			res = new ImageDirectEstimator<Spectrum, Float, Uint, ROW_MAJOR>(estimator_create_info.N, width, height);
+			res = new ImageDirectEstimator<Spectrum, Float, Integer, ROW_MAJOR>(estimator_create_info.N, width, height);
 			break;
 		default:
 			throw std::logic_error("Heuristic not recognized! Cannot create the estimator");

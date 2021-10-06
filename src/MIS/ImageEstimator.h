@@ -146,17 +146,6 @@ namespace MIS
 		/// <param name="iterations">: The total number of iterations the algorithm ran.</param>
 		virtual void solve(Spectrum* res, int iterations) = 0;
 
-		/// <summary>
-		/// Function to launch the debug, only for the direct estimator. This function is currently deprecated.
-		/// </summary>
-		/// <param name="iterations">: The number of iterations the algorithm ran.</param>
-		/// <param name="col_sum">: Output an image of the difference between the estimated sum of the cols / rows of the tech matrix and its expected value (number of sample for the technique). 
-		/// If the image does not average to 0, there is probably a bias.</param>
-		/// <param name="matrix">: Output images of the tech matices.</param>
-		/// <param name="vec">: Output images of the contrib vectors.</param>
-		/// <param name="alpha">: Output images of the alpha vectors.</param>
-		virtual void debug(int iterations, bool col_sum, bool matrix, bool vec, bool alpha)const
-		{}
 	};
 
 } // namespace MIS

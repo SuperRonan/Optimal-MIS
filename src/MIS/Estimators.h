@@ -15,7 +15,11 @@
 
 namespace MIS
 {
-	template <class Spectrum, class Float, class Uint=size_t>
+	/// <summary>
+	/// Integer can be signed or unsigned, it does not matter.
+	/// It is here to precise the width of the integers to use (we recomand 64 bits)
+	/// <returns></returns>
+	template <class Spectrum, class Float, class Integer=int64_t>
 	Estimator<Spectrum, Float>* createEstimator(EstimatorCreateInfo<Float> const& estimator_create_info=EstimatorCreateInfo<Float>())
 	{
 		Estimator<Spectrum, Float>* res = nullptr;
@@ -37,10 +41,10 @@ namespace MIS
 				res = new MaximumEstimator<Spectrum, Float>(estimator_create_info.N);
 			break;
 			case Heuristic::Direct:
-				res = new DirectEstimator<Spectrum, Float, Uint>(estimator_create_info.N);
+				res = new DirectEstimator<Spectrum, Float, Integer>(estimator_create_info.N);
 			break;
 			case Heuristic::Progressive:
-				res = new ProgressiveEstimator<Spectrum, Float, Uint>(estimator_create_info.N, estimator_create_info.progressive_step);
+				res = new ProgressiveEstimator<Spectrum, Float, Integer>(estimator_create_info.N, estimator_create_info.progressive_step);
 			break;
 			default:
 				throw std::logic_error("Heuristic not recognized! Cannot create the estimator");
