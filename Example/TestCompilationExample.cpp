@@ -1,3 +1,5 @@
+#define OPTIMIS_IMPL 2
+
 #include <iostream>
 #include "Spectrum.h"
 
@@ -10,6 +12,7 @@
 #include <random>
 #include <memory>
 
+
 const std::vector<MIS::Heuristic> heuristics = { MIS::Heuristic::Balance,
 		MIS::Heuristic::CutOff, MIS::Heuristic::Maximum, MIS::Heuristic::Power,
 		MIS::Heuristic::Naive, MIS::Heuristic::Direct, MIS::Heuristic::Progressive };
@@ -21,6 +24,15 @@ const std::vector<MIS::Heuristic> image_heuristics = { MIS::Heuristic::Balance,
 template <class Estimator>
 void testEstimator()
 {
+	const auto printSystem = [&](MIS::LinearSystem< Estimator::Float_Type> const& system)
+	{
+		std::cout << "matrix: \n";
+		std::cout << system.tech_matrix << "\n";
+		std::cout << "vectors: \n";
+		std::cout << system.contrib_vectors << "\n";
+		std::cout << "alphas: \n";
+		std::cout << system.alphas << "\n";
+	};
 	// Just a function to check that it compiles well
 	const int N = 2;
 	Estimator _estimator(N);
@@ -43,6 +55,13 @@ void testEstimator()
 	estimator.addOneTechniqueEstimate(estimate * 2, 1);
 
 	std::cout << "Estimator " << (int)estimator.m_heuristic << " result: " << estimator.solve(1) << std::endl;
+
+	if constexpr (std::is_same<Estimator, MIS::DirectEstimator< Estimator::Spectrum_Type, Estimator::Float_Type>>::value)
+	{
+		MIS::LinearSystem< Estimator::Float_Type> system = estimator.getLinearSystem(1);
+		printSystem(system);
+	}
+
 	estimator.reset();
 }
 

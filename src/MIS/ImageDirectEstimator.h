@@ -317,7 +317,7 @@ namespace MIS
 		LinearSystem<Float> getPixelLinearSystem(int iterations, int x, int y)
 		{
 			using Solver = Eigen::ColPivHouseholderQR<MatrixT>;
-			LinearSystem<Float> res;
+			LinearSystem<Float> res(this->m_numtechs, Wrapper::size());
 			res.tech_matrix = MatrixT(this->m_numtechs, this->m_numtechs);
 			res.contrib_vectors = MatrixT(this->m_numtechs, this->spectrumDim());
 			res.alphas = MatrixT(this->m_numtechs, this->spectrumDim());

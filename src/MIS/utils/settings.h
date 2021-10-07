@@ -2,11 +2,15 @@
 
 // true -> stores the data of the optimal estimator contiguously in one big buffer, slightly faster
 // false -> stores the data of the optimal estimator in different buffers, slightly slower
-#define OPTIMIS_ONE_CONTIGUOUS_ARRAY true
+#ifndef OPTIMIS_ONE_CONTIGUOUS_ARRAY
+	#define OPTIMIS_ONE_CONTIGUOUS_ARRAY true
+#endif
 
-// true -> enable debug functions of the direct estimator
-#define OPTIMIS_ENABLE_DEBUG false
-
+// 1 -> old version
+// 2 -> new version, probably faster.
+#ifndef OPTIMIS_IMPL
+#define OPTIMIS_IMPL 2
+#endif
 
 #ifdef _MSC_VER 
 #define MIS_forceinline __forceinline
