@@ -12,6 +12,10 @@
 #define OPTIMIS_IMPL 2
 #endif
 
+#ifndef OPTIMIS_CORRECT_NAN_INF
+#define OPTIMIS_CORRECT_NAN_INF false
+#endif
+
 #ifdef _MSC_VER 
 #define MIS_forceinline __forceinline
 #endif

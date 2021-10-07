@@ -245,11 +245,16 @@ namespace MIS
 				for (int j = 0; j < i; ++j)
 				{
 					Float elem = data.techMatrix[matTo1D(i, j)];
+#if OPTIMIS_CORRECT_NAN_INF
 					if (std::isnan(elem) || std::isinf(elem))	elem = 0;
+#endif
 					matrix(i, j) = elem;
 					matrix(j, i) = elem;
 				}
 				Float mii = data.techMatrix[matTo1D(i, i)];
+#if OPTIMIS_CORRECT_NAN_INF
+				if (std::isnan(mii) || std::isinf(mii)) mii = 0;
+#endif
 				// Unsampled samples
 				SINT expected = m_sample_per_technique[i] * (SINT)iterations;
 				SINT actually = data.sampleCount[i];
@@ -291,7 +296,9 @@ namespace MIS
 						for (int i = 0; i < this->m_numtechs; ++i)
 						{
 							Float elem = contribVector[i];
+#if OPTIMIS_CORRECT_NAN_INF
 							if (std::isnan(elem) || std::isinf(elem))	elem = 0;
+#endif
 							vector[i] = elem;
 							isZero = isZero & (contribVector[i] == 0);
 						}
@@ -318,9 +325,6 @@ namespace MIS
 		{
 			using Solver = Eigen::ColPivHouseholderQR<MatrixT>;
 			LinearSystem<Float> res(this->m_numtechs, Wrapper::size());
-			res.tech_matrix = MatrixT(this->m_numtechs, this->m_numtechs);
-			res.contrib_vectors = MatrixT(this->m_numtechs, this->spectrumDim());
-			res.alphas = MatrixT(this->m_numtechs, this->spectrumDim());
 			const PixelData data = this->getPixelData(this->pixelTo1D(x, y));
 			fillMatrix(res.tech_matrix, data, iterations);
 			Solver solver = res.tech_matrix.colPivHouseholderQr();

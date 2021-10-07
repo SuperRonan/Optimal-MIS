@@ -1,4 +1,3 @@
-#define OPTIMIS_IMPL 2
 
 #include <iostream>
 #include "Spectrum.h"

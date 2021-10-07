@@ -160,14 +160,18 @@ namespace MIS
 					const int mat_id = matTo1D(i, j);
 					Float elem = m_matrix_data[mat_id];
 					assert(elem >= 0);
+#if OPTIMIS_CORRECT_NAN_INF
 					if (std::isnan(elem) || std::isinf(elem) || elem < 0)	elem = 0;
+#endif
 					m_matrix(i, j) = elem;
 					m_matrix(j, i) = elem;
 				}
 				const int mat_id = matTo1D(i, i);
 				Float elem = m_matrix_data[mat_id];
 				assert(elem >= 0);
+#if OPTIMIS_CORRECT_NAN_INF
 				if (std::isnan(elem) || std::isinf(elem))	elem = 0;
+#endif
 				SINT expected = m_sample_per_technique[i] * (SINT)iterations;
 				SINT actually = m_sample_count[i];
 				// Use signed integer in case the actual number of samples given overflows the expected one
@@ -187,7 +191,9 @@ namespace MIS
 				for (int i = 0; i < this->m_numtechs; ++i)
 				{
 					Float elem = cvector[i];
+#if OPTIMIS_CORRECT_NAN_INF
 					if (std::isnan(elem) || std::isinf(elem))	elem = 0;
+#endif
 					m_vector[i] = elem;
 					is_zero = is_zero & (elem == 0);
 				}
@@ -364,13 +370,17 @@ namespace MIS
 				{
 					Float elem = m_matrix(i, j);
 					assert(elem >= 0);
+#if OPTIMIS_CORRECT_NAN_INF
 					if (std::isnan(elem) || std::isinf(elem) || elem < 0)	elem = 0;
+#endif
 					m_matrix(j, i) = m_matrix(i, j) = elem;
 				}
 				// Check Diagonal + unsampled samples
 				Float elem = m_matrix(i, i);
 				assert(elem >= 0);
+#if OPTIMIS_CORRECT_NAN_INF
 				if (std::isnan(elem) || std::isinf(elem))	elem = 0;
+#endif
 				SINT expected = m_sample_per_technique[i] * (SINT)iterations;
 				SINT actually = m_sample_count[i];
 				// Use signed integer in case the actual number of samples given overflows the expected one
