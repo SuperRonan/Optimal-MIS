@@ -201,7 +201,6 @@ namespace MIS
 					}
 					VectorT& alpha = m_vector;
 					alpha = m_solver.solve(m_vector);
-					std::cout << "alpha: " << alpha << std::endl;
 					SolvingFloat estimate = alpha.dot(m_MVector);
 					res[k] = estimate;
 				}
