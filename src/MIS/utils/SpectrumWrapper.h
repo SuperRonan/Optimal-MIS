@@ -42,7 +42,7 @@ namespace MIS
 			return m_data;
 		}
 
-		auto& operator[](int i)
+		decltype(auto) operator[](int i)
 		{
 			if constexpr (isUnique())
 			{
@@ -53,7 +53,7 @@ namespace MIS
 				return m_data[i];
 		}
 
-		auto operator[](int i)const
+		decltype(auto) operator[](int i)const
 		{
 			if constexpr (isUnique())
 			{
