@@ -19,7 +19,9 @@ namespace MIS
 	//}
 
 // This can't not be inlined
-#define isOptimal(h) ((int h) < 0)
+	constexpr inline bool isOptimal(Heuristic h) { 
+		return (int)h < 0;
+	}
 
 	template <class Float>
 	struct EstimatorCreateInfo

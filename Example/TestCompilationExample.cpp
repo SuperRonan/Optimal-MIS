@@ -222,4 +222,6 @@ int main(int argc, char ** argv)
 	testVirtualImageEstimators<Float, Float>();
 	testVirtualImageEstimators<RGBColor, Float>();
 
+	constexpr bool a = MIS::isOptimal(MIS::Heuristic::Balance);
+	constexpr bool b = MIS::isOptimal(MIS::Heuristic::Direct);
 }
