@@ -167,7 +167,7 @@ namespace MIS
 		{}
 #endif
 
-		virtual void setSampleForTechnique(int techIndex, int n) override
+		virtual void setSamplesForTechnique(int techIndex, int n) override
 		{
 			m_sample_per_technique[techIndex] = n;
 		}

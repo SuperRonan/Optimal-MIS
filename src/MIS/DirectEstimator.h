@@ -104,7 +104,7 @@ namespace MIS
 		{}
 
 
-		virtual void setSampleForTechnique(int tech_index, int n)override
+		virtual void setSamplesForTechnique(int tech_index, int n)override
 		{
 			m_sample_per_technique[tech_index] = n;
 			m_MVector[tech_index] = n;
@@ -316,7 +316,7 @@ namespace MIS
 
 		DirectEstimator_V2(DirectEstimator_V2&& other) = default;
 
-		virtual void setSampleForTechnique(int tech_index, int n)override
+		virtual void setSamplesForTechnique(int tech_index, int n)override
 		{
 			m_sample_per_technique[tech_index] = n;
 			m_MVector[tech_index] = n;

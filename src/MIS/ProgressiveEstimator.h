@@ -127,7 +127,7 @@ namespace MIS
 			for (int k = 0; k < Wrapper::size(); ++k)	m_alphas[k] = std::move(other.m_alphas[k]);
 		}
 
-		virtual void setSampleForTechnique(int tech_index, int n)override
+		virtual void setSamplesForTechnique(int tech_index, int n)override
 		{
 			m_sample_per_technique[tech_index] = n;
 			m_MVector[tech_index] = n;

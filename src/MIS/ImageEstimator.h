@@ -108,7 +108,7 @@ namespace MIS
 		/// </summary>
 		/// <param name="tech_index">: The index of the technique.</param>
 		/// <param name="n">: The number of sample per iteration.</param>
-		virtual void setSampleForTechnique(int tech_index, int n)
+		virtual void setSamplesForTechnique(int tech_index, int n)
 		{}
 
 		/// <summary>

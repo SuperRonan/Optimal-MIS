@@ -8,6 +8,7 @@
 #include "MaximumEstimator.h"
 #include "NaiveEstimator.h"
 #include "ProgressiveEstimator.h"
+#include "AlphaEstimator.h"
 
 #include "Heuristics.h"
 
@@ -45,6 +46,9 @@ namespace MIS
 			break;
 			case Heuristic::Progressive:
 				res = new ProgressiveEstimator<Spectrum, Float, Integer>(estimator_create_info.N, estimator_create_info.progressive_step);
+			break;
+			case Heuristic::Alpha:
+				res = new AlphaEstimator<Spectrum, Float>(estimator_create_info.N);
 			break;
 			default:
 				throw std::logic_error("Heuristic not recognized! Cannot create the estimator");

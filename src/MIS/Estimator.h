@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Heuristics.h"
+#include "utils/SpectrumWrapper.h"
 
 namespace MIS
 {
@@ -27,6 +28,7 @@ namespace MIS
 
 		using Spectrum_Type = Spectrum;
 		using Float_Type = Float;
+		using Wrapper_Type = SpectrumWrapper<Spectrum>;
 
 		/// <param name="N"> The number of techniques.</param>
 		Estimator(int N, Heuristic h):
@@ -43,7 +45,7 @@ namespace MIS
 		/// </summary>
 		/// <param name="tech_index">: The index of the technique.</param>
 		/// <param name="n">: The number of sample per iteration.</param>
-		virtual void setSampleForTechnique(int tech_index, int n) {}
+		virtual void setSamplesForTechnique(int tech_index, int n) {}
 
 		/// <summary>
 		/// Updates the estimator with the information of the drawn sample.

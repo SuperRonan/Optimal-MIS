@@ -10,6 +10,7 @@ namespace MIS
 		Maximum = 16,
 		Direct = -1,
 		Progressive = -2,
+		Alpha = -4,
 	};
 
 // This can still be inlined
@@ -21,6 +22,11 @@ namespace MIS
 // This can't not be inlined
 	constexpr inline bool isOptimal(Heuristic h) { 
 		return (int)h < 0;
+	}
+
+	constexpr inline bool hasLinearSystem(Heuristic h)
+	{
+		return h == Heuristic::Direct || h == Heuristic::Progressive;
 	}
 
 	template <class Float>
