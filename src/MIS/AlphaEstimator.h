@@ -47,14 +47,14 @@ namespace MIS
 
 		void setAlpha(VectorsT const& alpha)
 		{
-			assert(alpha.rows() == m_numtechs);
+			assert(alpha.rows() == this->m_numtechs);
 			assert(alpha.cols() == Wrapper::size());
 			this->_alpha = alpha;
 		}
 
 		void setAlpha(VectorsT&& alpha)
 		{
-			assert(alpha.rows() == m_numtechs);
+			assert(alpha.rows() == this->m_numtechs);
 			assert(alpha.cols() == Wrapper::size());
 			this->_alpha = std::move(alpha);
 		}

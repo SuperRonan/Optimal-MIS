@@ -198,7 +198,6 @@ void testEstimator()
 						sum += qdf[ii];
 					}
 				}
-				if (sum == 0)	__debugbreak();
 				for (int ii = 0; ii < N; ++ii)
 				{
 					wb[ii] = qdf[ii] / sum;
