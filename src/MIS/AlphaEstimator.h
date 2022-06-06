@@ -2,7 +2,7 @@
 
 #include "Estimator.h"
 #include "DirectCommons.h"
-#include <utils/SpectrumWrapper.h>
+#include "utils/SpectrumWrapper.h"
 #include <cassert>
 
 namespace MIS
