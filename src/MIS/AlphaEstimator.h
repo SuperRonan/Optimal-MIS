@@ -67,8 +67,7 @@ namespace MIS
 		virtual void addEstimate(Spectrum const& estimate, const Float* wb, int tech_index) override
 		{
 			Spectrum tmp = estimate * wb[tech_index];
-			SpectrumWrapper _tmp(tmp);
-			SpectrumWrapper estimate_(estimate);
+			Wrapper _tmp(tmp);
 
 			for (int k = 0; k < Wrapper::size(); ++k)
 			{
@@ -78,27 +77,26 @@ namespace MIS
 				}
 			}
 
-			this->_estimate += tmp;
+			this->_estimate += _tmp;
 		}
 
 		virtual void addOneTechniqueEstimate(Spectrum const& estimate, int tech_index) override
 		{
 			Spectrum tmp = estimate;
-			SpectrumWrapper _tmp(tmp);
-			SpectrumWrapper estimate_(estimate);
+			Wrapper _tmp(tmp);
 
 			for (int k = 0; k < Wrapper::size(); ++k)
 			{
 				_tmp[k] += this->_alpha(tech_index, k);
 			}
 
-			this->_estimate += tmp;
+			this->_estimate += _tmp;
 		}
 
 		Spectrum alphaSum()const
 		{
 			Spectrum res;
-			SpectrumWrapper _res(res);
+			Wrapper _res(res);
 			VectorSpectrum doot = _samples_per_tech * _alpha;
 			for (int k = 0; k < Wrapper::size(); ++k)
 			{
