@@ -1,5 +1,8 @@
 # Optimal-MIS
 Practical implementation of Optimal MIS for Light Transport.
+![Bathroom](https://github.com/user-attachments/assets/80d4ad92-cbe8-4bd6-83b7-a2abcc7a8c72)
+![BDPT-best](https://github.com/user-attachments/assets/7ad88384-dad6-4083-b44d-3d9b5203cbbc)
+![Glass](https://github.com/user-attachments/assets/736beb02-3a82-485c-a6ee-1412b286604f)
 
 This repository provides a C++ header only library of Practical Optimal Multiple Importance Sampling, as presented in the 
 [TODO: Practical Optimal MIS technical report](https://github.com/SuperRonan/Optimal-MIS), based on the original 
